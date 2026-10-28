@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0A4234" />
+<title>ClassTrack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@500;700&family=Kalam&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --green:#0A4234;--green-2:#125743;--green-3:#1e7a5b;--mint:#e3eee7;--mint-2:#cfe2d6;
+  --cream:#F5F0E6;--cream-2:#FBF8F1;--card:#FFFDF9;--ink:#15211b;--muted:#66736c;--line:#e6dece;
+  --red:#c0392b;--blue:#1f3d9e;--amber:#b7791f;--amber-bg:#fbf0d9;--red-bg:#f9e3df;
+  --r:22px;--shadow:0 1px 2px rgba(10,66,52,.05),0 10px 30px -12px rgba(10,66,52,.18);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,sans-serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+img{max-width:100%}
+a{color:var(--green-3);font-weight:700}
+h1,h2,h3{line-height:1.2;margin:0 0 .4em;letter-spacing:-.02em}
+h1{font-size:clamp(1.6rem,3.5vw,2.3rem);font-weight:800}
+h2{font-size:1.45rem;font-weight:800}
+h3{font-size:1.05rem;font-weight:700}
+p{margin:0 0 .6em}
+.muted{color:var(--muted)}.small{font-size:.85rem}.w100{width:100%}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.stack>*+*{margin-top:12px}
+.mt{margin-top:16px}.mb{margin-bottom:16px}
+@media(max-width:560px){.hide-sm{display:none}}
+
+/* logo */
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.2rem;color:var(--green);letter-spacing:-.02em}
+.badge{width:40px;height:40px;border-radius:13px;background:var(--green);color:var(--cream);display:grid;place-items:center;flex:none;box-shadow:0 6px 16px -6px rgba(10,66,52,.6)}
+.logo.big{font-size:2.1rem}.logo.big .badge{width:60px;height:60px;border-radius:18px}
+.logo.light{color:var(--cream)}.logo.light .badge{background:var(--cream);color:var(--green)}
+
+/* layout */
+.topbar{position:sticky;top:0;z-index:20;background:rgba(245,240,230,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1120px;margin:auto;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wrap{max-width:1120px;margin:auto;padding:22px 18px 130px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr}.wrap{padding:16px 14px 130px}.card{padding:16px}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:14px;padding:11px 18px;font-weight:700;font-size:.95rem;cursor:pointer;background:var(--mint);color:var(--green);transition:transform .08s,background .2s;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--mint-2)}.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-primary{background:var(--green);color:var(--cream)}.btn-primary:hover{background:var(--green-2)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}.btn-ghost:hover{background:var(--cream-2)}
+.btn-cream{background:var(--cream);color:var(--green)}.btn-cream:hover{background:#fff}
+.btn-oc{background:transparent;border-color:rgba(245,240,230,.45);color:var(--cream)}.btn-oc:hover{background:rgba(245,240,230,.12)}
+.btn-danger{background:var(--red-bg);color:var(--red)}.btn-danger:hover{background:#f3d2cc}
+.btn-sm{padding:7px 12px;font-size:.85rem;border-radius:11px}
+.icon-btn{width:40px;height:40px;padding:0;border-radius:12px}
+.back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--green);font-weight:700;cursor:pointer;padding:6px 0;margin-bottom:10px}
+
+/* forms */
+.lbl{display:block;font-weight:600;font-size:.85rem;margin:12px 0 6px;color:var(--muted)}
+.inp{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:13px;background:var(--cream-2);outline:none}
+.inp:focus{border-color:var(--green-3);box-shadow:0 0 0 3px rgba(30,122,91,.15)}
+textarea.inp{min-height:90px;resize:vertical}
+
+/* landing */
+.landing{min-height:100vh;display:grid;place-items:center;padding:40px 18px;background:radial-gradient(1000px 500px at 85% -10%,#e0ece4 0,transparent 60%),radial-gradient(800px 400px at -10% 110%,#ece4d2 0,transparent 60%),var(--cream)}
+.landing-in{max-width:980px;width:100%;text-align:center}
+.tagline{font-size:1.15rem;color:var(--muted);margin:14px 0 40px}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:20px;text-align:left}
+@media(max-width:720px){.roles{grid-template-columns:1fr}}
+.role-card{background:var(--card);border:1.5px solid var(--line);border-radius:26px;padding:26px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow);transition:transform .2s,border-color .2s,box-shadow .2s;cursor:pointer;text-align:left}
+.role-card:hover{transform:translateY(-4px);border-color:var(--green-3);box-shadow:0 20px 40px -20px rgba(10,66,52,.35)}
+.role-ic{width:52px;height:52px;border-radius:16px;background:var(--mint);color:var(--green);display:grid;place-items:center}
+.role-card ul{margin:0;padding:0;list-style:none;display:grid;gap:8px;flex:1}
+.role-card li{display:flex;gap:10px;align-items:flex-start;font-size:.95rem}
+.role-card li svg{flex:none;margin-top:3px;color:var(--green-3)}
+
+/* banner & stats */
+.banner{background:linear-gradient(135deg,var(--green),#145c46);color:var(--cream);border-radius:28px;padding:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;margin-bottom:18px}
+.banner:after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:rgba(245,240,230,.06)}
+.banner>*{position:relative;z-index:1}
+.banner p{opacity:.88}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;font-weight:700;opacity:.7!important}
+.stat{cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:transform .15s}
+.stat:hover{transform:translateY(-3px)}
+.stat .ic{width:42px;height:42px;border-radius:13px;background:var(--mint);color:var(--green);display:grid;place-items:center}
+.stat b{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;color:var(--green)}
+.big-n{font-size:1.8rem;font-weight:800;color:var(--green);margin-top:6px}
+
+/* lists */
+.list{display:flex;flex-direction:column}
+.li{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:none}
+.li.click{cursor:pointer;border-radius:12px;padding:12px 8px}.li.click:hover{background:var(--cream-2)}
+.li .grow{flex:1;min-width:0}
+.ttl{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av{width:38px;height:38px;border-radius:12px;background:var(--mint);color:var(--green);display:grid;place-items:center;font-weight:800;font-size:.85rem;flex:none}
+.av.lg{width:64px;height:64px;border-radius:20px;font-size:1.3rem}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:.78rem;font-weight:700;background:var(--mint);color:var(--green);white-space:nowrap}
+.pill.amber,.draft{background:var(--amber-bg);color:var(--amber)}.pill.red{background:var(--red-bg);color:var(--red)}
+.pill.grey{background:#eee9df;color:var(--muted)}.pill.blue{background:#e3e8f8;color:var(--blue)}
+.empty{text-align:center;color:var(--muted);padding:26px 10px}
+.note{background:var(--mint);border-radius:16px;padding:12px 14px;font-size:.9rem;color:var(--green);display:flex;gap:10px;align-items:flex-start}
+.note svg{flex:none;margin-top:2px}
+
+/* bottom nav */
+.bnav{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;background:var(--green);border-radius:24px;padding:7px;display:flex;gap:4px;box-shadow:0 16px 40px -12px rgba(10,66,52,.6);width:min(560px,calc(100% - 24px))}
+.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:rgba(245,240,230,.7);font-size:.72rem;font-weight:700;padding:8px 4px;border-radius:18px;cursor:pointer}
+.bnav button.on{background:var(--cream);color:var(--green)}
+
+/* paper + handwriting */
+.paper{position:relative;container-type:inline-size;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,.05),0 18px 40px -18px rgba(10,66,52,.35);border:1px solid var(--line);display:block}
+.paper>img{display:block;width:100%;user-select:none;-webkit-user-drag:none}
+.ln{position:absolute;transform:translateY(-100%);height:max(24px,5.4cqw);line-height:max(24px,5.4cqw);font-family:'Kalam',cursive;font-size:max(16px,3cqw);color:var(--blue);background:transparent;border:none;outline:none;padding:0 .8cqw;margin:0;border-radius:.6cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+input.ln:hover{background:rgba(31,61,158,.04)}input.ln:focus{background:rgba(31,61,158,.08)}
+.anno{position:absolute;transform:translate(0,-80%) rotate(-2deg);display:flex;align-items:center;gap:.4cqw;font-family:'Caveat',cursive;font-weight:700;font-size:4.2cqw;line-height:1;color:var(--red);pointer-events:none;white-space:nowrap}
+.ink{width:4.3cqw;height:auto;overflow:visible}
+.ink path,.anno-total path{fill:none;stroke:var(--red);stroke-linecap:round;stroke-linejoin:round}
+.ink path{stroke-width:3.2}.anno-total path{stroke-width:2.2}
+.anno-c{position:absolute;font-family:'Caveat',cursive;font-size:3.3cqw;line-height:1.1;color:var(--red);pointer-events:none;transform:rotate(-1deg);white-space:nowrap;max-width:80%;overflow:hidden;text-overflow:ellipsis}
+.anno-total{position:absolute;top:3.5%;right:4%;width:17cqw;height:9cqw;display:grid;place-items:center;font-family:'Caveat',cursive;font-weight:700;font-size:6cqw;color:var(--red);transform:rotate(-3deg);pointer-events:none}
+.anno-total svg{position:absolute;inset:0;width:100%;height:100%}
+.eline{position:absolute;transform:translateY(-100%);height:1.4cqw;border-bottom:.45cqw dashed var(--green-3);pointer-events:none}
+.eline span{position:absolute;left:0;bottom:1.2cqw;background:var(--green);color:var(--cream);font-size:2cqw;font-weight:700;padding:.2cqw 1cqw;border-radius:1cqw;pointer-events:auto;display:flex;gap:.8cqw;align-items:center}
+.eline button{background:none;border:none;color:var(--cream);cursor:pointer;font-size:2.2cqw;padding:0;line-height:1}
+.edit-paper{cursor:crosshair}
+.pen{font-family:'Caveat',cursive;color:var(--red);font-weight:700}
+.pen-in{font-family:'Caveat',cursive;font-size:1.35rem;color:var(--red);font-weight:700;background:transparent;border:none;border-bottom:1.5px dashed rgba(192,57,43,.35);outline:none;padding:2px 4px}
+.pen-in:focus{border-bottom-color:var(--red);background:rgba(192,57,43,.04)}
+.pen-in.mark{width:58px;text-align:center;font-size:1.6rem}
+textarea.pen-in{width:100%;min-height:80px;border:1.5px dashed rgba(192,57,43,.35);border-radius:12px;padding:8px 10px;resize:vertical;line-height:1.25}
+.qi{border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--cream-2)}
+.qi+.qi{margin-top:10px}.qi.sel{border-color:var(--green-3);background:#f1f7f3}
+.ans{font-family:'Kalam',cursive;color:var(--blue);margin:4px 0}
+.memo{font-size:.8rem;color:var(--muted)}
+.grade-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
+.grade-layout>aside{position:sticky;top:84px}
+@media(max-width:900px){.grade-layout{grid-template-columns:1fr}.grade-layout>aside{position:static}}
+.total-line{font-size:1.6rem;margin:10px 0}
+.spin{width:16px;height:16px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ink-wrap{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.ink-wrap img{display:block;width:100%}
+.ink-wrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.tool.on,.lm.on,.sync.on{background:var(--green);color:var(--cream)}
+.pager{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+.pager>.pg{flex:0 0 100%;min-width:0;scroll-snap-align:start}
+.pager-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0}
+.pager.fit .pg{text-align:center}
+.pager.fit .ink-wrap{display:inline-block;line-height:0;max-width:100%}
+.pager.fit .ink-wrap img{width:auto;max-width:100%;max-height:calc(100vh - 270px)}
+.pager.fit .pg>.row{text-align:left}
+.pager.memo .pg img{display:block;max-width:100%;width:auto;max-height:calc(100vh - 270px);margin:0 auto;border-radius:12px;border:1px solid var(--line);cursor:zoom-in}
+.grade-layout>*{min-width:0}
+.btn.w100{white-space:normal;line-height:1.25;text-align:center}
+.grade-layout.with-memo{grid-template-columns:minmax(0,1.1fr) minmax(0,1.1fr) minmax(0,.8fr)}
+@media(max-width:1250px){.grade-layout.with-memo{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.grade-layout.with-memo>aside{grid-column:1/-1;position:static}}
+@media(max-width:700px){.grade-layout.with-memo{grid-template-columns:minmax(0,1fr)}}
+.pens{display:inline-flex;align-items:center;gap:5px;margin:0 4px}
+.sw{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);padding:0;cursor:pointer}
+.sw.on{box-shadow:0 0 0 2.5px var(--green)}
+.swc{width:30px;height:28px;padding:0;border:none;background:none;cursor:pointer}
+.thumbs{display:flex;gap:10px;flex-wrap:wrap}
+.thumb{width:84px;height:104px;border-radius:12px;object-fit:cover;border:1px solid var(--line);cursor:zoom-in;background:#fff;flex:none}
+.thumb-wrap{position:relative}
+.thumb-wrap button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:none;background:var(--red);color:#fff;cursor:pointer;font-size:12px}
+
+/* register */
+.seg{display:inline-flex;background:var(--cream-2);border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px}
+.seg button{border:none;background:none;border-radius:9px;padding:6px 11px;font-weight:800;font-size:.8rem;cursor:pointer;color:var(--muted)}
+.seg .P.on{background:var(--green);color:var(--cream)}.seg .L.on{background:var(--amber);color:#fff}.seg .A.on{background:var(--red);color:#fff}
+.bars{display:flex;align-items:flex-end;gap:8px;height:150px;padding-top:10px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;font-size:.7rem;color:var(--muted)}
+.bar i{display:block;width:100%;max-width:34px;border-radius:9px 9px 4px 4px;background:var(--green-3)}
+.meter{height:8px;background:#ece6d9;border-radius:99px;overflow:hidden;flex:1}
+.meter i{display:block;height:100%;background:var(--green-3);border-radius:99px}
+.meter.low i{background:var(--amber)}
+
+/* overlays */
+.overlay{position:fixed;inset:0;z-index:60}
+.modal-bg{position:fixed;inset:0;background:rgba(6,30,23,.45);display:grid;place-items:center;padding:16px;z-index:70}
+.modal{background:var(--card);border-radius:24px;padding:22px;width:min(520px,100%);max-height:90vh;overflow:auto}
+.lightbox{position:fixed;inset:0;background:rgba(6,30,23,.85);z-index:80;display:grid;place-items:center;padding:20px;cursor:zoom-out}
+.lightbox img{max-height:92vh;border-radius:12px}
+#kiosk{background:var(--green);color:var(--cream);overflow:auto}
+.kiosk-top{display:flex;justify-content:space-between;align-items:center;padding:18px 22px}
+.kiosk-body{max-width:1000px;margin:auto;padding:10px 20px 40px;text-align:center}
+.kiosk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-top:24px}
+.kiosk-tile{background:rgba(245,240,230,.08);border:1.5px solid rgba(245,240,230,.18);border-radius:22px;padding:18px 12px;color:var(--cream);display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;font-weight:700}
+.kiosk-tile:active{transform:scale(.96)}.kiosk-tile:hover{background:rgba(245,240,230,.14)}
+.kiosk-tile .av{width:56px;height:56px;border-radius:18px;background:var(--cream);font-size:1.1rem}
+.kiosk-tile.done{opacity:.6}
+.kiosk-tile em{font-style:normal;font-size:.75rem;padding:3px 10px;border-radius:99px;background:var(--cream);color:var(--green)}
+.kiosk-msg{background:var(--cream);color:var(--green);border-radius:20px;padding:16px;font-size:1.2rem;font-weight:700;margin-top:16px;animation:pop .25s ease}
+@keyframes pop{from{transform:scale(.95);opacity:0}}
+#live{background:#062a20;color:var(--cream);display:flex;flex-direction:column}
+.live-top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;gap:10px}
+.live-dot{width:9px;height:9px;border-radius:50%;background:#ff5a4e;box-shadow:0 0 0 4px rgba(255,90,78,.25);display:inline-block}
+.stage{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;padding:0 18px 12px;overflow:auto;align-content:center}
+.tile{position:relative;aspect-ratio:4/3;background:#0d3a2e;border-radius:20px;overflow:hidden;border:2px solid transparent}
+.tile.fac{border-color:#7fd1ae}
+.tile video,.tile canvas{width:100%;height:100%;object-fit:cover;display:block}
+.mirror{transform:scaleX(-1)}
+.tile .tag{position:absolute;left:10px;bottom:10px;background:rgba(6,42,32,.75);padding:4px 10px;border-radius:99px;font-size:.8rem;font-weight:700}
+.live-hint{grid-column:1/-1;text-align:center;opacity:.75;font-size:.9rem;padding:8px}
+.live-ctrl{display:flex;justify-content:center;gap:10px;padding:12px 18px max(18px,env(safe-area-inset-bottom))}
+.lc{width:54px;height:54px;border-radius:18px;border:none;background:rgba(245,240,230,.12);color:var(--cream);display:grid;place-items:center;cursor:pointer}
+.lc.off{background:var(--red)}
+.lc.leave{background:var(--red);width:auto;height:44px;padding:0 18px;font-weight:700;display:flex;gap:8px;align-items:center;border-radius:14px}
+.fx{background:#0b382b;border-top:1px solid rgba(245,240,230,.1);padding:14px 18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1.5px solid rgba(245,240,230,.25);background:transparent;color:var(--cream);border-radius:99px;padding:7px 14px;font-weight:700;font-size:.85rem;cursor:pointer}
+.chip.on{background:var(--cream);color:var(--green);border-color:var(--cream)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:.88rem;margin-top:12px}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;z-index:90;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:pop .2s;max-width:calc(100% - 30px);text-align:center}
+[hidden]{display:none!important}
+#print{display:none}
+@media print{
+  body{background:#fff}
+  #app,#kiosk,#live,#modal,.toast{display:none!important}
+  #print{display:block;font-family:Arial,sans-serif;color:#000}
+  #print table{width:100%;border-collapse:collapse;font-size:10px}
+  #print th,#print td{border:1px solid #444;padding:4px;text-align:center}
+  #print td.n{text-align:left;white-space:nowrap}
+  @page{size:landscape;margin:12mm}
+}
+
+/* --- Supabase edition additions --- */
+.inkcv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.inkcv.draw{pointer-events:auto;cursor:crosshair;touch-action:none}
+.inkcv{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+input.ln.free{background:rgba(255,255,255,.55);border-bottom:1.5px dashed var(--green-3)}
+select.inp{appearance:auto}
+.auth{max-width:520px;margin:auto;text-align:left}
+.auth .card{padding:26px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.fgrid{grid-template-columns:1fr}}
+.chipf{display:inline-flex;align-items:center;gap:6px;background:var(--mint);color:var(--green);border-radius:99px;padding:5px 12px;font-size:.82rem;font-weight:700;margin:3px}
+.bookcard{cursor:pointer;transition:transform .15s}.bookcard:hover{transform:translateY(-3px)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.pcard img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 18px}
+.tabs button{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:8px 16px;font-weight:700;cursor:pointer;color:var(--muted)}
+.tabs button.on{background:var(--green);color:var(--cream);border-color:var(--green)}
+.nodraw .inkcv.draw{pointer-events:none;touch-action:auto}
+.ink-wrap canvas.inkcv:not(.draw){pointer-events:none;touch-action:auto;cursor:default}
+.pglabel{font-size:.78rem;font-weight:700;color:var(--muted);margin:14px 0 6px;letter-spacing:.04em;text-transform:uppercase}
+.pglabel:first-child{margin-top:0}
+/* full-screen marking */
+.markwrap.full{position:fixed;inset:0;z-index:200;background:var(--cream,#f3efe4);overflow:auto;padding:10px 14px 24px}
+.markwrap.full .fullbar{position:sticky;top:-10px;z-index:5;background:var(--cream,#f3efe4);padding:8px 0;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.markwrap.full .back,.markwrap.full .markhead{display:none}
+.markwrap.full .grade-layout{grid-template-columns:minmax(0,1fr) 340px;gap:12px}
+.markwrap.full .grade-layout.with-memo{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 340px}
+.markwrap.full .grade-layout>aside{position:sticky;top:56px;max-height:calc(100vh - 80px);overflow:auto}
+.markwrap.full .pager.fit .ink-wrap,.markwrap.full .pager.fit .ink-wrap img{display:block;width:100%;max-width:100%;max-height:none}
+.markwrap.full .pager.memo .pg img{max-height:none;width:100%}
+.markwrap.full .grade-layout>.card:not(aside){padding:10px}
+.markwrap.full .grade-layout>.card:not(aside)>p.small{display:none}
+.markwrap.full .toolbar{position:sticky;top:44px;z-index:4;background:var(--card,#fffdf6);padding:6px 0}
+.markwrap.full .grade-layout.with-memo>.card:nth-child(2){position:sticky;top:56px;max-height:calc(100vh - 80px);overflow:auto;align-self:start}
+@media(max-width:1100px){.markwrap.full .grade-layout,.markwrap.full .grade-layout.with-memo{grid-template-columns:minmax(0,1fr)}.markwrap.full .grade-layout>aside{position:static;max-height:none}}
+/* combined memo + marks panel */
+.grade-layout,.grade-layout.with-memo{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+.grade-layout.solo{grid-template-columns:minmax(0,1fr)}
+.sidetabs{display:flex;gap:6px;margin-bottom:12px;background:var(--cream-2,#efe9d8);padding:4px;border-radius:12px}
+.sidetabs button{flex:1;border:0;background:transparent;padding:9px 10px;border-radius:9px;font:inherit;font-weight:700;cursor:pointer;color:var(--muted)}
+.sidetabs button.on{background:var(--green,#0A4234);color:#fff}
+.markwrap.full .grade-layout,.markwrap.full .grade-layout.with-memo{grid-template-columns:minmax(0,1fr) 420px}
+.markwrap.full .grade-layout.solo{grid-template-columns:minmax(0,1fr)}
+.markwrap.full .grade-layout>.card:nth-child(2){position:sticky;top:56px;max-height:calc(100vh - 80px);overflow:auto;align-self:start}
+@media(max-width:900px){.grade-layout,.grade-layout.with-memo{grid-template-columns:1fr}}
+@media(max-width:1100px){.markwrap.full .grade-layout,.markwrap.full .grade-layout.with-memo{grid-template-columns:minmax(0,1fr)}.markwrap.full .grade-layout>.card:nth-child(2){position:static;max-height:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="kiosk" class="overlay" hidden></div>
+<div id="live" class="overlay" hidden></div>
+<div id="modal"></div>
+<div id="print"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const uid=()=>Math.random().toString(36).slice(2,10);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const localISO=(d=new Date())=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const hhmm=(d=new Date())=>d.toTimeString().slice(0,5);
+const fmtD=iso=>new Date(iso+'T12:00').toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short'});
+const fmtTS=ts=>new Date(ts).toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'});
+const initials=n=>String(n).split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+const first=n=>String(n).split(' ')[0];
+const pct=(a,b)=>b?Math.round(a/b*100):0;
+const sum=(arr,f)=>arr.reduce((t,x)=>t+(+f(x)||0),0);
+const LBL={P:'Present',L:'Late',A:'Absent'};
+const rng=s=>()=>(s=(s*16807)%2147483647)/2147483647;
+function toast(m){$$('.toast').forEach(t=>t.remove());const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
+const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});
+function readImage(file,max=1400){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>loadImg(r.result).then(img=>{const s=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.8));}).catch(rej);r.readAsDataURL(file);});}
+const isPdf=f=>f&&(f.type==='application/pdf'||/\.pdf$/i.test(f.name||''));
+let pdfLibP=null;
+function loadPdfJs(){
+  if(pdfLibP)return pdfLibP;
+  const base='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/';
+  pdfLibP=(async()=>{
+    await loadScript(base+'pdf.min.js');
+    const lib=window.pdfjsLib;if(!lib)throw new Error('PDF reader did not load');
+    const code=await (await fetch(base+'pdf.worker.min.js')).text();
+    lib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
+    return lib;
+  })();
+  pdfLibP.catch(()=>{pdfLibP=null;});
+  return pdfLibP;
+}
+async function pdfToImages(file,max,limit=150,onText){
+  const lib=await loadPdfJs(),pdf=await lib.getDocument({data:await file.arrayBuffer()}).promise,out=[],n=Math.min(pdf.numPages,limit);
+  for(let i=1;i<=n;i++){
+    const pg=await pdf.getPage(i),v0=pg.getViewport({scale:1}),s=Math.min(3,max/Math.max(v0.width,v0.height)),vp=pg.getViewport({scale:s});
+    const c=document.createElement('canvas');c.width=Math.round(vp.width);c.height=Math.round(vp.height);
+    const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
+    await pg.render({canvasContext:x,viewport:vp}).promise;out.push(c.toDataURL('image/jpeg',.8));
+    if(onText){try{const tc=await pg.getTextContent();let t='',ly=null;for(const it of tc.items){const y=it.transform?it.transform[5]:0;if(ly!==null&&Math.abs(y-ly)>2)t+='\n';else if(t&&!/\s$/.test(t)&&it.str&&!/^\s/.test(it.str))t+=' ';t+=it.str;ly=y;}if(t.trim().length>15)onText(t);}catch{}}
+  }
+  if(pdf.numPages>limit)toast('Only the first '+limit+' pages of '+file.name+' were added.');
+  return out;
+}
+async function readImages(files,max,onText){
+  const out=[];
+  for(const f of files){
+    if(isPdf(f)){
+      const done=busy('Reading '+f.name+'…');
+      try{out.push(...await pdfToImages(f,max,150,onText));}catch(e){console.error(e);toast('Could not read '+f.name+' — try again, or upload photos of the pages instead.');}finally{done();}
+      continue;
+    }
+    try{out.push(await readImage(f,max))}catch{toast('Could not read '+f.name+' — use a JPG, PNG or PDF file.')}
+  }
+  return out;
+}
+let ocrP=null;
+function getOcr(){
+  if(ocrP)return ocrP;
+  ocrP=(async()=>{await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');if(!window.Tesseract)throw new Error('The text reader did not load');return window.Tesseract.createWorker('eng');})();
+  ocrP.catch(()=>{ocrP=null;});return ocrP;
+}
+async function ocrImage(src){const w=await getOcr(),{data}=await w.recognize(src);return (data&&data.text)||'';}
+let jsPdfP=null;
+function loadJsPdf(){
+  if(jsPdfP)return jsPdfP;
+  jsPdfP=(async()=>{
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js');
+    if(!window.jspdf)throw new Error('The PDF maker did not load');
+    return window.jspdf.jsPDF;
+  })();
+  jsPdfP.catch(()=>{jsPdfP=null;});return jsPdfP;
+}
+const loadScript=src=>new Promise((res,rej)=>{if(document.querySelector(`script[src="${src}"]`))return res();const s=document.createElement('script');s.src=src;s.crossOrigin='anonymous';s.onload=res;s.onerror=()=>rej(new Error('Script failed to load'));document.head.appendChild(s);});
+
+/* ---------- icons ---------- */
+const I={
+ cap:'<path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/><path d="M22 10v6"/>',
+ grid:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
+ pen:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+ folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>',
+ clip:'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
+ book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5Z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+ star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2 1.2-6.8-5-4.9 6.9-1Z"/>',
+ video:'<path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/>',
+ mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/>',
+ image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
+ upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
+ camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3Z"/><circle cx="12" cy="13" r="3"/>',
+ sparkle:'<path d="m12 3-1.9 5.8L4 10.7l6.1 1.9L12 18.5l1.9-5.9 6.1-1.9-6.1-1.9Z"/>',
+ search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+ check:'<path d="M20 6 9 17l-5-5"/>',
+ back:'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+ x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+ print:'<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+ sliders:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
+ logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>'
+};
+const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
+const badge=(s=22)=>`<span class="badge">${ic('cap',s)}</span>`;
+const avatar=(n,c='')=>`<span class="av ${c}">${esc(initials(n))}</span>`;
+
+/* ClassTrack · Supabase edition · core: state, data, auth, ink, paper */
+const CFG=window.CT_CONFIG||{};
+const configured=typeof supabase!=='undefined'&&/^https:\/\//.test(CFG.SUPABASE_URL||'')&&!/YOUR/i.test((CFG.SUPABASE_URL||'')+(CFG.SUPABASE_ANON_KEY||''))&&(CFG.SUPABASE_ANON_KEY||'').length>40;
+const sb=configured?supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
+const BUCKET='classtrack',MAXFILE=10*1024*1024;
+
+const U={role:null,me:null,org:'',classId:null,view:'dash',param:null};
+const D={classes:[],klass:null,learners:[],assignments:[],subs:[],results:[],att:{},comments:[],books:[],pages:[],docs:[]};
+const T={loading:true,authStep:'role',authMsg:'',pending:null,matches:null,tab:'sheets',search:'',regDate:localISO(),tool:'pen',kiosk:false,mark:null,draft:null,viewInk:{},lastInk:null,pendingSave:0,col:(()=>{try{return localStorage.getItem('ct.pencol')||'#c0392b';}catch{return '#c0392b';}})(),lmode:'type'};
+try{T.pending=JSON.parse(localStorage.getItem('ct.pending')||'null');}catch{}
+
+const isFac=()=>U.role==='facilitator';
+const fullName=l=>l?`${l.name||''} ${l.surname||''}`.trim():'Unknown';
+const learner=id=>D.learners.find(l=>l.id===id);
+const lname=id=>learner(id)?fullName(learner(id)):'Unknown learner';
+const asg=id=>D.assignments.find(a=>a.id===id);
+const myName=()=>U.me?fullName(U.me):'Guest';
+const mySub=aid=>D.subs.find(s=>s.assignment_id===aid&&U.me&&s.learner_id===U.me.id);
+const fmtSize=n=>!n?'':n<1024?n+' B':n<1048576?Math.round(n/1024)+' KB':(n/1048576).toFixed(1)+' MB';
+const lateAfter=()=>String(D.klass?.late_after||'08:00').slice(0,5);
+function resetD(){Object.assign(D,{classes:[],klass:null,learners:[],assignments:[],subs:[],results:[],att:{},comments:[],books:[],pages:[],docs:[]});}
+function busy(msg){$$('.toast').forEach(x=>x.remove());const t=document.createElement('div');t.className='toast';t.innerHTML='<span class="spin" style="display:inline-block;vertical-align:-3px;margin-right:8px"></span>'+esc(msg);document.body.appendChild(t);const d=()=>t.remove();d.set=m=>{if(t.lastChild)t.lastChild.textContent=m;};return d;}
+
+/* ---------- storage ---------- */
+const URLS={};
+const url=p=>{const e=URLS[p];return e&&e.exp>Date.now()?e.url:'';};
+async function sign(paths){
+  const need=[...new Set((paths||[]).filter(Boolean))].filter(p=>!url(p));
+  for(let i=0;i<need.length;i+=100){
+    const {data,error}=await sb.storage.from(BUCKET).createSignedUrls(need.slice(i,i+100),3600);
+    if(error){console.warn('sign',error);continue;}
+    (data||[]).forEach(r=>{if(r.signedUrl)URLS[r.path]={url:r.signedUrl,exp:Date.now()+50*60e3};});
+  }
+}
+async function upload(path,src,type){
+  const blob=typeof src==='string'?await (await fetch(src)).blob():src;
+  const {error}=await sb.storage.from(BUCKET).upload(path,blob,{contentType:type||blob.type||'application/octet-stream',upsert:false});
+  if(error)throw error;return path;
+}
+async function removeFiles(paths){const p=(paths||[]).filter(Boolean);if(p.length)await sb.storage.from(BUCKET).remove(p);}
+const extOf=n=>((String(n).split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,8))||'bin';
+async function urlToData(u){const b=await (await fetch(u)).blob();return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(b);});}
+async function download(path,name){
+  if(!url(path))await sign([path]);
+  const b=await (await fetch(url(path))).blob();
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);
+}
+
+/* ---------- data ---------- */
+async function loadClasses(){
+  const {data,error}=await sb.from('classes').select('*').order('created_at');
+  if(error)throw error;D.classes=data||[];
+  if(U.role==='learner')U.classId=U.me.class_id;
+  else{const saved=localStorage.getItem('ct.classId');U.classId=((D.classes.find(c=>c.id===saved)||D.classes[0])||{}).id||null;}
+  D.klass=D.classes.find(c=>c.id===U.classId)||null;
+}
+async function loadData(){
+  const c=U.classId;if(!c)return;
+  const q=(t,f)=>{const r=sb.from(t).select('*').eq('class_id',c);return f?f(r):r;};
+  const since=localISO(addDays(new Date(),-150));
+  const res=await Promise.all([
+    q('learners',r=>r.order('surname').order('name')),
+    q('assignments',r=>r.order('created_at',{ascending:false})),
+    q('submissions'),
+    q('results',r=>r.order('created_at',{ascending:false})),
+    q('attendance',r=>r.gte('day',since)),
+    isFac()?q('comments',r=>r.order('created_at',{ascending:false})):Promise.resolve({data:[]}),
+    q('books',r=>r.order('created_at',{ascending:false})),
+    q('book_pages',r=>r.order('page_no')),
+    q('documents',r=>r.order('created_at',{ascending:false}))]);
+  const bad=res.find(x=>x.error);if(bad)throw bad.error;
+  const [lr,ar,sr,rr,atr,cr,br,pr,dr]=res;
+  const att={};atr.data.forEach(a=>{(att[a.day]||(att[a.day]={}))[a.learner_id]=a.status;});
+  Object.assign(D,{learners:lr.data,assignments:ar.data,subs:sr.data,results:rr.data,att,comments:cr.data||[],books:br.data,pages:pr.data,docs:dr.data});
+  D.klass=D.classes.find(x=>x.id===c)||D.klass;
+  await sign([...D.assignments.flatMap(sheetPg),...D.subs.flatMap(s=>s.scans||[]),...D.results.flatMap(r=>r.scans||[]),...D.pages.map(p=>p.path)]);
+}
+async function reload(){await loadData();render();}
+
+/* ---------- auth / session ---------- */
+async function enterSession(){
+  U.role=null;U.me=null;U.org='';
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session)return;
+  {
+    const {data:ls}=await sb.from('learner_sessions').select('learner_id').maybeSingle();
+    if(ls){
+      const {data:l}=await sb.from('learners').select('*').eq('id',ls.learner_id).maybeSingle();
+      if(l){Object.assign(U,{role:'learner',me:l,classId:l.class_id,view:'home',param:null});return;}
+    }
+    if(session.user.is_anonymous){T.authStep='learner';return;}
+  }
+  const getFac=()=>sb.from('facilitators').select('*, organizations(name)').eq('id',session.user.id).maybeSingle();
+  let {data:f}=await getFac();
+  if(!f&&T.pending){
+    const {error}=await sb.rpc('register_facilitator',{p_code:T.pending.code,p_name:T.pending.name,p_surname:T.pending.surname});
+    if(error){T.authMsg=error.message;T.authStep='facilitator';return;}
+    localStorage.removeItem('ct.pending');T.pending=null;
+    f=(await getFac()).data;
+  }
+  if(!f){T.authStep='facilitator';T.authMsg='Almost there — enter your details to finish signing up.';return;}
+  Object.assign(U,{role:'facilitator',me:f,org:f.organizations?.name||'',view:'dash',param:null});
+}
+async function afterLogin(){
+  T.loading=true;render();
+  try{await enterSession();if(U.role){await loadClasses();await loadData();subscribeRealtime();}}
+  catch(e){console.error(e);toast('Could not load your data: '+(e.message||e));}
+  T.loading=false;render();
+}
+function subscribeRealtime(){
+  if(rt){sb.removeChannel(rt);rt=null;}
+  rt=sb.channel('db-changes').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(rtTimer);rtTimer=setTimeout(softRefresh,700);}).subscribe();
+}
+let rt=null,rtTimer=null;
+async function softRefresh(){
+  if(!sb||!U.role||T.pendingSave||T.refreshing)return;
+  T.refreshing=true;
+  const hadA=new Set(D.assignments.map(a=>a.id)),wasIn=new Set(D.subs.filter(s=>s.status!=='draft').map(s=>s.id));
+  try{await loadData();}catch(e){T.refreshing=false;return;}
+  T.refreshing=false;
+  try{
+    if(isFac()){const n=D.subs.filter(s=>s.status==='submitted'&&!wasIn.has(s.id));
+      if(n.length)toast(n.length===1?`${lname(n[0].learner_id)} submitted “${asg(n[0].assignment_id)?.title||'work'}” — it's in their portfolio.`:`${n.length} learners just submitted work — see Portfolios or Grade work.`);}
+    else if(U.role==='learner'){const n=D.assignments.filter(a=>a.published!==false&&!hadA.has(a.id));
+      if(n.length)toast(n.length===1?`New work from your facilitator: ${n[0].title}`:`${n.length} new pieces of work from your facilitator`);}
+  }catch{}
+  if(T.kiosk)renderKiosk();
+  const a=document.activeElement,typing=a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName);
+  if(T.mark||T.draft||typing||$('#live')&&!$('#live').hidden)return;
+  render();
+}
+async function signOutAll(){
+  if(typeof Live!=='undefined'&&Live.running)Live.leave();
+  if(rt){sb.removeChannel(rt);rt=null;}
+  try{await sb.auth.signOut();}catch{}
+  Object.assign(U,{role:null,me:null,org:'',classId:null,view:'dash',param:null});resetD();
+  Object.assign(T,{mark:null,draft:null,authStep:'role',matches:null,authMsg:'',kiosk:false});renderKiosk();render();
+}
+
+/* ---------- sample worksheet (rasterised to a JPEG so it uploads like a scan) ---------- */
+function buildSample(){
+  const W=800,H=1000,qs=[
+    ['Which gas do plants absorb from the air during photosynthesis?',2,'carbon dioxide',1],
+    ['Name the green pigment in leaves that captures sunlight.',2,'chlorophyll',1],
+    ['Write the word equation for photosynthesis.',4,'carbon dioxide, water, sunlight, glucose, oxygen',2],
+    ['Explain why photosynthesis is important for animals and people.',4,'oxygen, food, energy',3]];
+  let y=300,body='';const questions=[],lines=[];
+  qs.forEach(([t,m,memo,n],i)=>{
+    const id='q'+(i+1);questions.push({id,num:i+1,marks:m,memo});
+    body+=`<text x="70" y="${y}" font-size="19" fill="#1b1b1b">${i+1}. ${t}</text><text x="690" y="${y}" font-size="17" fill="#555" text-anchor="end">(${m})</text>`;
+    let ly=y+52;
+    for(let k=0;k<n;k++){body+=`<line x1="70" y1="${ly}" x2="690" y2="${ly}" stroke="#a9b3ad" stroke-width="1.4"/>`;lines.push({id:`l${i+1}${k}`,qid:id,x:+(70/W*100).toFixed(2),y:+(ly/H*100).toFixed(2),w:+(620/W*100).toFixed(2)});ly+=46;}
+    y=ly-46+82;
+  });
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="Georgia, serif"><rect width="100%" height="100%" fill="#fffefa"/><line x1="712" y1="0" x2="712" y2="${H}" stroke="#e8a7a0" stroke-width="1.5"/><text x="70" y="70" font-size="14" fill="#0A4234" font-family="Arial" font-weight="bold" letter-spacing="2">CLASSTRACK · SAMPLE WORKSHEET</text><text x="70" y="112" font-size="30" font-weight="bold" fill="#111">Worksheet: Photosynthesis</text><text x="70" y="146" font-size="17" fill="#444">Natural Sciences · Answer every question on the lines provided.</text><text x="70" y="200" font-size="17" fill="#333">Name: ______________________________   Date: ______________</text><line x1="70" y1="232" x2="700" y2="232" stroke="#0A4234" stroke-width="2"/>${body}<text x="70" y="${H-40}" font-size="13" fill="#888">Total: 12 marks</text></svg>`;
+  return {svg:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg),questions,lines};
+}
+async function sampleSheet(){
+  const s=buildSample(),img=await loadImg(s.svg),c=document.createElement('canvas');c.width=1200;c.height=1500;
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);
+  return {data:c.toDataURL('image/jpeg',.9),questions:s.questions,lines:s.lines};
+}
+
+/* ---------- stats ---------- */
+function attStats(lid){let p=0,l=0,a=0;Object.values(D.att).forEach(d=>{const s=d[lid];if(s==='P')p++;else if(s==='L')l++;else if(s==='A')a++;});const t=p+l+a;return {p,l,a,t,rate:pct(p+l,t)};}
+const avgOf=ps=>{const m=ps.filter(p=>+p.max>0);return m.length?Math.round(sum(m,p=>pct(+p.score,+p.max))/m.length):null;};
+const scorePill=p=>{const v=pct(+p.score,+p.max);return `<span class="pill ${v<50?'red':v<70?'amber':''}">${+p.score}/${+p.max} · ${v}%</span>`;};
+const thumbs=(paths,del)=>(paths||[]).map((p,i)=>`<div class="thumb-wrap"><img class="thumb" src="${url(p)}" data-act="zoom" alt="Scan ${i+1}">${del?`<button data-act="${del}" data-arg="${i}" title="Remove">✕</button>`:''}</div>`).join('');
+const thumbsData=(list,del)=>(list||[]).map((d,i)=>`<div class="thumb-wrap"><img class="thumb" src="${d}" data-act="zoom" alt="Page ${i+1}">${del?`<button data-act="${del}" data-arg="${i}" title="Remove">✕</button>`:''}</div>`).join('');
+const upBtns=(fn,a,b)=>`<label class="btn btn-sm">${ic('camera',16)}${a}<input type="file" accept="image/*" capture="environment" hidden data-file="${fn}"></label><label class="btn btn-sm btn-ghost">${ic('upload',16)}${b}<input type="file" accept="image/*,application/pdf,.pdf" multiple hidden data-file="${fn}"></label>`;
+
+/* ---------- pen annotations ---------- */
+const INK={tick:'<path d="M4 19c4 3 8 8 11 13 6-12 16-23 29-29"/>',half:'<path d="M4 19c4 3 8 8 11 13 6-12 16-23 29-29"/><path d="M21 9l11 16"/>',cross:'<path d="M8 6c8 7 18 16 30 26"/><path d="M38 5C28 13 18 22 9 31"/>'};
+const inkSvg=k=>`<svg class="ink" viewBox="0 0 48 36">${INK[k]}</svg>`;
+const BUILD='build 28 Oct 17:50';
+const sheetPg=a=>a.pages&&a.pages.length?a.pages:[a.sheet_path];
+function paperHTML(a,answers={},items=null,editable=false,inkKey=null,draw=false,pg=0){
+  const sfx=pg?String(pg):'',pp=sheetPg(a),pl=l=>(l.pg||0)===pg;
+  let h=`<div class="paper" data-pg="${pg}"><img src="${url(pp[pg]||pp[0])}" alt="${esc(a.title)}" draggable="false">`;
+  for(const ln of a.lines.filter(pl)){const v=answers[ln.id]||'',st=`left:${ln.x}%;top:${ln.y}%;width:${ln.w}%`;
+    h+=editable?`<input class="ln" style="${st}" data-ln="${ln.id}" value="${esc(v)}" autocomplete="off" aria-label="Answer line">`:`<div class="ln" style="${st}">${esc(v)}</div>`;}
+  const ft=answers&&answers.__txt;
+  if(Array.isArray(ft))for(const f of ft.filter(pl)){const st=`left:${f.x}%;top:${f.y}%;width:${f.w}%`;
+    h+=editable?`<input class="ln free" style="${st}" data-fl="${f.id}" value="${esc(f.v||'')}" autocomplete="off" aria-label="Typed note">`:`<div class="ln" style="${st}">${esc(f.v||'')}</div>`;}
+  if(items){const marked=items.some(i=>i.mark!=null&&i.mark!=='');
+    for(const q of a.questions){const it=items.find(i=>i.qid===q.id),all=a.lines.filter(l=>l.qid===q.id);
+      if(!it||it.mark==null||it.mark===''||!all.length)continue;
+      const last=all[all.length-1];if((last.pg||0)!==pg)continue;
+      const qls=all.filter(pl),x=Math.min(last.x+last.w+2,88),r=it.mark/it.max;
+      h+=`<div class="anno" style="left:${x}%;top:${last.y}%">${inkSvg(r>=1?'tick':r>0?'half':'cross')}<span>${it.mark}</span></div>`;
+      if(it.comment)h+=`<div class="anno-c" style="left:${qls[0].x+2}%;top:${last.y+1}%">${esc(it.comment)}</div>`;}
+    if(marked&&pg===0)h+=`<div class="anno-total"><svg viewBox="0 0 120 70" preserveAspectRatio="none"><path d="M64 6C28 3 5 17 7 36s30 29 58 28 50-13 48-32S86 2 50 9"/></svg><span>${sum(items,i=>i.mark)}/${sum(items,i=>i.max)}</span></div>`;}
+  const li=answers&&answers.__ink;
+  if(inkKey!=='mine'&&li&&li['mine'+sfx]&&li['mine'+sfx].length){T.learnerInk=li;h+=`<canvas class="inkcv" data-ink="learner${sfx}"></canvas>`;}
+  if(inkKey)h+=`<canvas class="inkcv${draw?' draw':''}" data-ink="${inkKey}${sfx}"></canvas>`;
+  return h+'</div>';
+}
+/* all pages of a worksheet, stacked, each labelled when there is more than one */
+function sheetHTML(a,answers,items,editable,inkKey,draw){
+  const n=sheetPg(a).length;
+  return sheetPg(a).map((_,i)=>(n>1?`<div class="pglabel">Page ${i+1} of ${n}</div>`:'')+paperHTML(a,answers,items,editable,inkKey,draw,i)).join('');
+}
+const inkCtx=()=>T.mark?T.mark.ink:T.viewInk;
+const PEN_COLS=['#c0392b','#1d4ed8','#15803d','#111827','#7e22ce','#ea580c','#db2777'];
+const penBar=()=>`<span class="pens">${PEN_COLS.map(c=>`<button class="sw ${T.col===c?'on':''}" style="background:${c}" data-act="penCol" data-arg="${c}" title="Pen colour" aria-label="Pen colour ${c}"></button>`).join('')}<input class="swc" type="color" value="${T.col}" data-in="penCol" title="Any colour" aria-label="Choose any colour"></span>`;
+function drawInk(cv,acts){
+  const c=cv.getContext('2d'),w=cv.width,h=cv.height;c.clearRect(0,0,w,h);
+  c.lineCap='round';c.lineJoin='round';
+  for(const a of acts){
+    const col=a.c||'#c0392b';c.strokeStyle=col;c.fillStyle=col;
+    if(a.t==='a'){c.save();c.font=`700 ${Math.max(12,w*.036)}px Caveat, Kalam, cursive`;c.textBaseline='middle';String(a.s||'').split('\n').forEach((ln,i)=>c.fillText(ln,a.x*w,a.y*h+i*w*.04));c.restore();}
+    else if(a.t==='s'){c.lineWidth=Math.max(1.8,w*.0042);c.beginPath();a.p.forEach(([x,y],i)=>i?c.lineTo(x*w,y*h):c.moveTo(x*w,y*h));if(a.p.length===1)c.lineTo(a.p[0][0]*w+.5,a.p[0][1]*h+.5);c.stroke();}
+    else{c.save();c.translate(a.x*w,a.y*h);const k=w/720;c.scale(k,k);c.lineWidth=3.6;
+      c.stroke(new Path2D(a.t==='k'?'M-18 0c3 3 7 8 10 13 6-12 15-23 27-30':'M-13 -13c7 7 17 16 26 26M13 -14C5 -6 -4 2 -12 12'));c.restore();}
+  }
+}
+function setupInk(root=document){
+  [...root.querySelectorAll('canvas[data-ink]')].forEach(cv=>{
+    const key=cv.dataset.ink,src=inkCtx(),acts=key.startsWith('learner')?((T.learnerInk||{})['mine'+key.slice(7)]||[]):(src[key]||(src[key]=[])),draw=cv.classList.contains('draw'),host=cv.parentElement;
+    let vis=!window.IntersectionObserver;
+    const fit=()=>{if(!vis)return;const r=host.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);cv.width=Math.max(1,Math.round(r.width*dpr));cv.height=Math.max(1,Math.round(r.height*dpr));drawInk(cv,acts);};
+    if(window.IntersectionObserver)new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){vis=true;fit();}else{vis=false;cv.width=1;cv.height=1;}});},{rootMargin:'900px 0px'}).observe(cv);
+    else fit();
+    if(window.ResizeObserver)new ResizeObserver(fit).observe(host);
+    host.querySelectorAll('img').forEach(im=>{if(!im.complete)im.addEventListener('load',fit,{once:true});});
+    if(!draw)return;
+    let cur=null;const pt=e=>{const r=cv.getBoundingClientRect();return [+((e.clientX-r.left)/r.width).toFixed(4),+((e.clientY-r.top)/r.height).toFixed(4)];};
+    cv.onpointerdown=e=>{e.preventDefault();const p=pt(e),tool=U.role==='learner'?'pen':T.tool;T.lastInk=key;
+      if(tool==='text'){const s=prompt('Type your note — it will be placed where you tapped:');if(s&&s.trim()){acts.push({t:'a',x:p[0],y:p[1],s:s.trim(),c:T.col});drawInk(cv,acts);if(T.inkSaved)T.inkSaved();}return;}
+      cv.setPointerCapture(e.pointerId);
+      if(tool==='pen'){cur={t:'s',c:T.col,p:[p]};acts.push(cur);}else acts.push({t:tool==='tick'?'k':'x',c:T.col,x:p[0],y:p[1]});drawInk(cv,acts);};
+    cv.onpointermove=e=>{if(!cur)return;cur.p.push(pt(e));drawInk(cv,acts);};
+    cv.onpointerup=cv.onpointercancel=()=>{cur=null;if(T.inkSaved)T.inkSaved();};
+  });
+}
+const redrawInk=()=>$$('canvas[data-ink]').forEach(cv=>{const k=cv.dataset.ink;drawInk(cv,k.startsWith('learner')?((T.learnerInk||{})['mine'+k.slice(7)]||[]):(inkCtx()[k]||[]));});
+const cleanInk=ink=>Object.fromEntries(Object.entries(ink||{}).filter(([,v])=>v&&v.length));
+async function flattenInk(src,acts){
+  const ou=URL.createObjectURL(await (await fetch(src)).blob()),img=await loadImg(ou),c=document.createElement('canvas');URL.revokeObjectURL(ou);c.width=img.naturalWidth;c.height=img.naturalHeight;
+  const x=c.getContext('2d');x.drawImage(img,0,0);
+  if(acts&&acts.length){const k=document.createElement('canvas');k.width=c.width;k.height=c.height;drawInk(k,acts);x.drawImage(k,0,0);}
+  return new Promise(r=>c.toBlob(r,'image/jpeg',.9));
+}
+
+/* ---------- AI fallback (keyword match against memo; used only if the ai-mark function is not deployed) ---------- */
+const STOP=new Set('the a an and or of to in for is are be it on with by from that this as at its into which'.split(' '));
+const kws=memo=>(memo.includes(',')?memo.split(','):memo.split(/\s+/)).map(s=>s.trim().toLowerCase().replace(/[^a-z0-9 ]/g,'')).filter(w=>w&&!STOP.has(w));
+const hit=(a,k)=>a.includes(k)||(k.length>6&&a.includes(k.slice(0,-2)));
+async function detectLines(src){
+  const img=await loadImg(src),W=900,H=Math.max(1,Math.round(img.naturalHeight/img.naturalWidth*W));
+  const c=document.createElement('canvas');c.width=W;c.height=H;
+  const x=c.getContext('2d',{willReadFrequently:true});x.fillStyle='#fff';x.fillRect(0,0,W,H);x.drawImage(img,0,0,W,H);
+  const d=x.getImageData(0,0,W,H).data,g=new Uint8Array(W*H);let sum=0;
+  for(let i=0;i<W*H;i++){const v=(d[i*4]*.3+d[i*4+1]*.59+d[i*4+2]*.11)|0;g[i]=v;sum+=v;}
+  const thr=Math.min(165,sum/(W*H)-40),cnt=new Int32Array(H),xs=new Int32Array(H).fill(W),xe=new Int32Array(H).fill(-1);
+  for(let y=0;y<H;y++){let n=0;for(let xx=0;xx<W;xx++)if(g[y*W+xx]<thr){n++;if(xx<xs[y])xs[y]=xx;xe[y]=xx;}cnt[y]=n;}
+  const cand=y=>cnt[y]>=W*.14,low=y=>y<0||y>=H||cnt[y]<W*.05,out=[];
+  for(let y=0;y<H;){
+    if(!cand(y)){y++;continue;}
+    let y1=y;while(y1+1<H&&(cand(y1+1)||(y1+2<H&&cand(y1+2))))y1++;
+    const t=y1-y+1;
+    const flank=[y-4,y-3,y-2,y1+2,y1+3,y1+4].every(low);
+    if(t<=6&&flank){
+      let a=W,b=-1;for(let r=y;r<=y1;r++){if(xs[r]<a)a=xs[r];if(xe[r]>b)b=xe[r];}
+      const len=b-a;
+      if(len>=W*.14&&len<=W*.93){
+        let ok=true;for(let s=0;s<10&&ok;s++){const sa=a+Math.floor(len*s/10),sb=a+Math.floor(len*(s+1)/10);let any=false;for(let r=y;r<=y1&&!any;r++)for(let xx=sa;xx<=sb;xx++)if(g[r*W+xx]<thr){any=true;break;}if(!any)ok=false;}
+        if(ok)out.push({x:a/W*100,y:(y+y1+1)/2/H*100,w:len/W*100});
+      }
+    }
+    y=y1+1;
+  }
+  return out;
+}
+function localGrade(m){
+  const items=m.items.map(it=>{const a=(it.answer||'').toLowerCase(),K=kws(it.memo||'');
+    if(!K.length)return {id:it.key,mark:it.mark??0,comment:it.comment||''};
+    const found=K.filter(k=>hit(a,k)),miss=K.filter(k=>!found.includes(k)),r=found.length/K.length;
+    const comment=!a.trim()?'No answer — ask if you are stuck.':r>=1?['Excellent!','Spot on.','Well done.'][it.max%3]:r>0?`Good — also mention ${miss.slice(0,2).join(' & ')}.`:`Revise: the key idea is ${K.slice(0,2).join(' & ')}.`;
+    return {id:it.key,mark:Math.round(r*it.max*2)/2,comment};});
+  const p=pct(sum(items,i=>i.mark),sum(m.items,i=>i.max)),n=lname(m.learnerId).split(' ')[0];
+  return {items,overall:p>=80?`Excellent work, ${n}! You clearly understand this topic.`:p>=50?`Good effort, ${n}. Look at the questions marked in red and add the missing key points.`:`${n}, let's revise this section together. Re-read your notes and try the marked questions again.`};
+}
+const parseRubric=t=>t.split('\n').map(s=>s.trim()).filter(Boolean).map((s,i)=>{const [d,m,k]=s.split('|');return {key:'c'+i,label:d.trim(),max:Math.max(.5,parseFloat(m)||1),mark:null,comment:'',memo:(k||'').trim()};});
+/* ----- free marking from memo key points (no AI) ----- */
+const editd=(a,b)=>{const m=a.length,n=b.length;if(Math.abs(m-n)>2)return 9;let p=Array.from({length:n+1},(_,j)=>j);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c;}return p[n];};
+const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();
+function hasKey(txt,k){const t=norm(txt),toks=t.split(' ');return norm(k).split(' ').filter(Boolean).every(w=>t.includes(w)||(w.length>=5&&toks.some(x=>editd(x,w)<=(w.length>=9?2:1))));}
+const INSTR=new Set('must should shall label labelled labeled explain describe give state name mention identify list write show draw which where when what also each both then than they their there these those with from into using used uses make makes'.split(' '));
+const extractKw=seg=>[...new Set(norm(seg).split(' ').filter(w=>w.length>=4&&!STOP.has(w)&&!INSTR.has(w)))].slice(0,12);
+function splitQ(text){
+  const map={};let cur=null,marked=false;
+  String(text||'').split(/\r?\n/).forEach(line=>{
+    const m=line.match(/^\s*(?:q(?:uestion)?\.?\s*)?(\d{1,2})(?:\.\d+(?:\s*[.):\-]\s*|\s+)|\s*[.):\-]\s*)(.*)$/i)||line.match(/^\s*q(?:uestion)?\.?\s*(\d{1,2})\s+(.*)$/i);
+    if(m){cur=+m[1];marked=true;map[cur]=(map[cur]?map[cur]+' ':'')+m[2];}
+    else if(cur!==null)map[cur]+=' '+line;
+  });
+  return {map,marked};
+}
+const numOf=(it,i)=>{const m=String(it.label||'').match(/^\s*(?:q(?:uestion)?\.?\s*)?(\d{1,2})/i);return m?+m[1]:i+1;};
+function freeMark(m){
+  const o=m.ocr||{},memoSeg=splitQ(o.memo),workSeg=splitQ(o.work),rows=[];let applied=0,skipped=0;
+  m.items.forEach((it,i)=>{
+    const num=numOf(it,i);let K,need;
+    if((it.memo||'').trim()){K=kws(it.memo);need=K.length;}
+    else{K=extractKw(memoSeg.marked?(memoSeg.map[num]||''):'');need=Math.max(1,Math.ceil(K.length*.7));}
+    if(!K.length){rows.push({i,mark:null});skipped++;return;}
+    const typed=(it.answer||'').trim(),txt=typed||(workSeg.marked?(workSeg.map[num]||''):(o.work||''));
+    const found=K.filter(k=>hasKey(txt,k)),miss=K.filter(k=>!found.includes(k)),r=Math.min(1,found.length/need);
+    const comment=!txt.trim()?'No answer found.':r>=1?'Key points found.':r>0?'Missing: '+miss.slice(0,3).join(', ')+'.':'Key points not found: '+K.slice(0,3).join(', ')+'.';
+    rows.push({i,mark:Math.round(r*it.max*2)/2,comment});applied++;
+  });
+  return {rows,applied,skipped,whole:!!(o.work&&o.work.trim()&&!workSeg.marked)};
+}
+function parseRoster(t){
+  return t.split(/\r?\n/).map(r=>r.split(/[,;\t]/).map(c=>c.replace(/^"|"$/g,'').trim()).filter(Boolean)).filter(c=>c.length)
+    .map(c=>c.length>=2?{name:c[0],surname:c.slice(1).join(' ')}:(w=>({name:w[0],surname:w.slice(1).join(' ')}))(c[0].split(/\s+/)))
+    .filter(x=>x.name&&x.surname&&!/^(name|names|first ?name)$/i.test(x.name));
+}
+
+/* ---------- render ---------- */
+function render(){
+  const app=$('#app');if(!app)return;
+  if(!configured){app.innerHTML=setupScreen();return;}
+  if(T.loading){app.innerHTML='<div class="landing"><div class="spin" style="width:34px;height:34px;color:var(--green)"></div></div>';return;}
+  if(!U.role)app.innerHTML=T.authStep==='facilitator'||T.authStep==='facCode'?facAuth():T.authStep==='learner'?learnerAuth():landing();
+  else{if(!T.mark)T.full=false;app.innerHTML=shell(isFac()?fView():lView());}
+  after();
+}
+function bindPagers(){
+  T.pg=T.pg||{};const gap=14;
+  $$('.pager').forEach(el=>{
+    const id=el.id,n=el.children.length,step=()=>el.clientWidth+gap,ind=document.getElementById(id+'-ind');
+    T.pg[id]=Math.min(T.pg[id]||0,Math.max(0,n-1));
+    if(T.pg[id])el.scrollLeft=T.pg[id]*step();
+    if(ind)ind.textContent='Page '+(T.pg[id]+1)+' of '+n;
+    let raf=0;
+    el.addEventListener('scroll',()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{
+      const i=Math.max(0,Math.min(n-1,Math.round(el.scrollLeft/step())));T.pg[id]=i;
+      const ind2=document.getElementById(id+'-ind');if(ind2)ind2.textContent='Page '+(i+1)+' of '+n;
+      if(id==='g-pages'&&T.memoSync!==false){const memo=document.getElementById('g-memo');if(!memo&&T.mark&&(T.mark.memoImgs||[]).length)T.pg['g-memo']=Math.min(i,T.mark.memoImgs.length-1);if(memo){const j=Math.min(i,memo.children.length-1);if(T.pg['g-memo']!==j)memo.scrollTo({left:j*(memo.clientWidth+gap),behavior:'smooth'});}}
+    });},{passive:true});
+  });
+}
+function bindFree(){
+  if(U.role!=='learner')return;
+  $$('#l-paper .paper').forEach(lp=>{
+    lp.onclick=e=>{
+      if(T.lmode==='draw'||T.lmode==='move'||e.target.closest('input,button'))return;
+      const s0=mySub(U.param);if(s0&&s0.status!=='draft')return;
+      const r=lp.getBoundingClientRect(),x=Math.max(1,Math.min((e.clientX-r.left)/r.width*100,78)),y=Math.max(3,Math.min((e.clientY-r.top)/r.height*100,99));
+      A.addFree(+x.toFixed(2),+y.toFixed(2),+(lp.dataset.pg||0));
+    };
+  });
+}
+function after(){
+  setupInk();bindPagers();bindFree();
+  const ep=$('#edit-paper');
+  if(ep)ep.onclick=e=>{if(e.target.closest('button'))return;const d=T.draft;if(!d.cur){addQ();}const r=ep.getBoundingClientRect();
+    const x=Math.max(1,Math.min((e.clientX-r.left)/r.width*100,85)),y=(e.clientY-r.top)/r.height*100;
+    d.lines.push({id:uid(),qid:d.cur,pg:d.ep||0,x:+x.toFixed(2),y:+y.toFixed(2),w:+Math.max(8,88-x).toFixed(2)});render();};
+}
+function go(v,p=null){if(U.role==='facilitator'&&!D.klass&&v!=='dash'){toast('Create your class first — tap “Create your class” on the Dashboard.');return;}U.view=v;U.param=p;render();window.scrollTo(0,0);}
+function addQ(){const d=T.draft,q={id:uid(),num:d.questions.length+1,marks:2,memo:''};d.questions.push(q);d.cur=q.id;}
+/* ClassTrack · Supabase edition · views */
+const authShell=inner=>`<div class="landing"><div class="landing-in auth"><div class="logo" style="justify-content:center;margin-bottom:22px">${badge()}ClassTrack</div><div class="card">${inner}</div></div></div>`;
+const noteBox=m=>m?`<div class="note mb">${ic('sparkle',18)}<div>${esc(m)}</div></div>`:'';
+const tabsHTML=(cur,list,act)=>`<div class="tabs">${list.map(([k,l])=>`<button class="${cur===k?'on':''}" data-act="${act}" data-arg="${k}">${l}</button>`).join('')}</div>`;
+const emptyCard=t=>`<div class="card empty">${t}</div>`;
+const backBtn=(v,l)=>`<button class="back" data-act="go" data-arg="${v}">${ic('back',18)}${l}</button>`;
+
+function setupScreen(){
+  return `<div class="landing"><div class="landing-in auth"><div class="logo" style="justify-content:center;margin-bottom:22px">${badge()}ClassTrack</div><div class="card">
+  <h2>One last setup step</h2><p class="muted">ClassTrack isn't connected to its database yet. Open <b>config.js</b> and paste in your Supabase <b>Project URL</b> and <b>anon public key</b> (Project Settings → API), then reload this page.</p>
+  <p class="small muted">${typeof supabase==='undefined'?'The Supabase library could not load — check your internet connection.':'Full steps are in SETUP.md.'}</p></div></div></div>`;
+}
+function landing(){
+  const card=(r,i,t,d,b,btn)=>`<div class="role-card" data-act="role" data-arg="${r}"><div class="role-ic">${ic(i,26)}</div><h3 style="font-size:1.35rem;margin:0">${t}</h3><p class="muted" style="margin:0">${d}</p><ul>${b.map(x=>`<li>${ic('check',16)}${x}</li>`).join('')}</ul><button class="btn btn-primary w100">${btn} →</button></div>`;
+  return `<div class="landing"><div class="landing-in">
+    <div class="logo big" style="justify-content:center">${badge(32)}ClassTrack</div>
+    <p class="tagline">Less paper, fewer lost scripts, more time teaching.</p>
+    <h2>Who is using ClassTrack today?</h2>
+    <div class="roles">
+      ${card('facilitator','pen','Facilitator','Grade work with AI, keep portfolios safe and run your attendance register.',['Mark in red pen on your laptop — AI only suggests','Scan textbooks &amp; worksheets for your class','Searchable learner portfolios','Attendance register, check-in &amp; printing','Live video classes with green screen'],'Continue as facilitator')}
+      ${card('learner','book','Learner','See the work your facilitator assigned and send your answers for marking.',['Write right on the lines of the worksheet','Scan &amp; send pages and documents','Download class books &amp; worksheets','See your marks and feedback','Join live classes with your camera'],'Continue as learner')}
+    </div></div></div>`;
+}
+function facAuth(){
+  const p=T.pending||{},msg=noteBox(T.authMsg);
+  if(T.authStep==='facCode')return authShell(`<button class="back" data-act="authBack">${ic('back',18)}Back</button><h2>Check your email</h2><p class="muted">We sent a sign-in code to <b>${esc(p.email||'')}</b>. Enter it below — or just tap the link in the email.</p>${msg}<label class="lbl">Sign-in code</label><input class="inp" id="f-token" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456"><button class="btn btn-primary w100 mt" data-act="facVerify">Continue</button>`);
+  return authShell(`<button class="back" data-act="authBack">${ic('back',18)}Back</button><h2>Facilitator sign-in</h2><p class="muted">Enter your organisation's code and your details. New here? Choose a password now (8 or more characters). Next time, use the same details and password — no email needed.</p>${msg}
+    <label class="lbl">Organisation code</label><input class="inp" id="f-code" value="${esc(p.code||'')}" autocomplete="off" autocapitalize="characters" placeholder="Code from your organisation">
+    <div class="fgrid"><div><label class="lbl">Name</label><input class="inp" id="f-name" value="${esc(p.name||'')}" autocomplete="given-name"></div><div><label class="lbl">Surname</label><input class="inp" id="f-surname" value="${esc(p.surname||'')}" autocomplete="family-name"></div></div>
+    <label class="lbl">Email</label><input class="inp" id="f-email" type="email" value="${esc(p.email||'')}" autocomplete="email">
+    <label class="lbl">Password</label><input class="inp" id="f-pass" type="password" autocomplete="current-password" placeholder="Choose one if you are new (8+ characters)">
+    <button class="btn btn-primary w100 mt" data-act="facSend">Continue</button>
+    <button class="btn btn-ghost w100 mt" data-act="facSend" data-arg="link">Email me a sign-in link instead</button>`);
+}
+function learnerAuth(){
+  const msg=noteBox(T.authMsg);
+  if(T.matches)return authShell(`<button class="back" data-act="authBack">${ic('back',18)}Back</button><h2>Which class are you in?</h2><p class="muted">Your name was added to more than one class.</p><div class="list">${T.matches.map(m=>`<div class="li click" data-act="learnerPick" data-arg="${m.learner_id}"><div class="grow"><div class="ttl">${esc(m.class_name)}</div><div class="small muted">${esc(m.org_name)}</div></div>${ic('check',18)}</div>`).join('')}</div>`);
+  return authShell(`<button class="back" data-act="authBack">${ic('back',18)}Back</button><h2>Learner sign-in</h2><p class="muted">Type your name and surname exactly as your facilitator added you, then your email and a password. First time? Choose a password now (8 or more characters). Next time, use the same details.</p>${msg}
+    <div class="fgrid"><div><label class="lbl">Name</label><input class="inp" id="l-name" value="${esc((T.lp||{}).name||'')}" autocomplete="given-name"></div><div><label class="lbl">Surname</label><input class="inp" id="l-surname" value="${esc((T.lp||{}).surname||'')}" autocomplete="family-name"></div></div>
+    <label class="lbl">Email</label><input class="inp" id="l-email" type="email" value="${esc((T.lp||{}).email||'')}" autocomplete="email">
+    <label class="lbl">Password</label><input class="inp" id="l-pass" type="password" autocomplete="current-password" placeholder="Choose one if you are new (8+ characters)">
+    <button class="btn btn-primary w100 mt" data-act="learnerGo">Enter my class</button>`);
+}
+function shell(content){
+  const fac=isFac();
+  const nav=fac?[['dash','Dashboard','grid'],['grade','Grade','pen'],['library','Library','book'],['portfolios','Portfolios','folder'],['register','Register','clip']]
+    :[['home','Home','grid'],['work','Work','pen'],['library','Library','book'],['marks','Marks','star'],['@live','Live','video']];
+  const active={result:fac?'portfolios':'marks',doWork:'work',book:'library',assign:'library'}[U.view]||U.view;
+  const sw=fac?`<select class="inp" style="width:auto;max-width:170px;padding:7px 10px" data-ch="switchClass" title="Switch class">${D.classes.length?'':'<option value="" disabled selected>No class yet</option>'}${D.classes.map(c=>`<option value="${c.id}" ${c.id===U.classId?'selected':''}>${esc(c.name)}</option>`).join('')}<option value="__new">＋ New class…</option></select>`
+    :`<span class="pill hide-sm">${esc(D.klass?.name||'')}</span>`;
+  return `<header class="topbar"><div class="topbar-in"><div class="logo">${badge()}<span class="hide-sm">ClassTrack</span></div>
+    <div class="row" style="flex-wrap:nowrap">${sw}
+      ${D.klass?`<button class="btn btn-sm btn-primary" data-act="live">${ic('video',16)}<span class="hide-sm">${fac?'Start live class':'Join live class'}</span></button>`:''}
+      <button class="btn btn-ghost icon-btn" title="Settings" data-act="settings">${ic('sliders',18)}</button>
+      <button class="btn btn-ghost icon-btn" title="Sign out" data-act="logout">${ic('logout',18)}</button>
+    </div></div></header>
+  <main class="wrap">${content}</main>
+  <nav class="bnav">${nav.map(([v,l,i])=>`<button class="${active===v?'on':''}" data-act="${v==='@live'?'live':'go'}" data-arg="${v}">${ic(i,20)}${l}</button>`).join('')}</nav>`;
+}
+
+/* ================= FACILITATOR ================= */
+function fView(){
+  if(!D.klass&&U.view!=='dash')U.view='dash';
+  switch(U.view){case 'grade':return fGrade();case 'library':return fLibrary();case 'book':return bookView(U.param);case 'assign':return assignEditor();
+    case 'portfolios':return fPort();case 'result':return resultView(U.param);case 'register':return fReg();default:return fDash();}
+}
+const pendRow=s=>`<div class="li click" data-act="gradeSub" data-arg="${s.id}">${avatar(lname(s.learner_id))}<div class="grow"><div class="ttl">${esc(lname(s.learner_id))}</div><div class="small muted">${esc(asg(s.assignment_id)?.title||'Worksheet')} · ${fmtTS(s.submitted_at)}</div></div><span class="pill amber">Mark</span></div>`;
+function fDash(){
+  const k=D.klass,date=new Date().toLocaleDateString('en-ZA',{weekday:'long',day:'numeric',month:'long'});
+  if(!k)return `<section class="banner"><div><p class="eyebrow">${esc(U.org)}</p><h1>Welcome, ${esc(U.me.name)}!</h1><p style="margin:0">Let's set up your first training class. Learners you add will enter ClassTrack straight into it.</p></div><button class="btn btn-cream" data-act="newClass">＋ Create your class</button></section>`;
+  const pend=D.subs.filter(s=>s.status==='submitted'),today=D.att[localISO()]||{},n=D.learners.length;
+  const inn=Object.values(today).filter(s=>s==='P'||s==='L').length;
+  const stat=(i,t,v,s,go)=>`<div class="card stat" data-act="go" data-arg="${go}"><span class="ic">${ic(i,20)}</span><b>${v}</b><span style="font-weight:700">${t}</span><span class="small muted">${s}</span></div>`;
+  return `<section class="banner"><div><p class="eyebrow">${date} · ${esc(k.name)}</p><h1>Good day, ${esc(U.me.name)}.</h1><p style="margin:0">${pend.length} script${pend.length===1?'':'s'} waiting for marking · ${inn}/${n} learners checked in today.</p></div>
+    <div class="row"><button class="btn btn-cream" data-act="checkin">${ic('clip',18)}Open learner check-in</button><button class="btn btn-oc" data-act="live">${ic('video',18)}Start live class</button></div></section>
+  ${n?'':`<div class="note mb">${ic('sparkle',18)}<div><b>No learners yet.</b> Add them in the <a href="#" data-act="go" data-arg="register">Register</a> — type names or paste a list. Learners then sign in with their name and surname.</div></div>`}
+  <div class="grid g4">${stat('pen','Grade work',pend.length,'scripts awaiting marking','grade')}${stat('book','Library',D.assignments.filter(a=>a.published).length+D.books.length,'worksheets &amp; books','library')}${stat('folder','Portfolios',n,`${D.results.length} assessments stored`,'portfolios')}${stat('clip','Attendance',`${inn}/${n}`,'checked in today','register')}</div>
+  <div class="grid g2 mt">
+    <div class="card"><div class="row between"><h3 style="margin:0">Waiting for marking</h3><button class="btn btn-sm" data-act="go" data-arg="grade">Open</button></div><div class="list mt">${pend.slice(0,5).map(pendRow).join('')||'<div class="empty">All caught up 🎉</div>'}</div></div>
+    <div class="card"><h3>Recently marked</h3><div class="list">${D.results.filter(p=>+p.max>0).slice(0,5).map(p=>`<div class="li click" data-act="go" data-arg="result:${p.id}">${avatar(lname(p.learner_id))}<div class="grow"><div class="ttl">${esc(p.title)}</div><div class="small muted">${esc(lname(p.learner_id))} · ${fmtTS(p.created_at)}</div></div>${scorePill(p)}</div>`).join('')||'<div class="empty">Nothing marked yet.</div>'}</div></div>
+  </div>`;
+}
+
+/* ----- grading ----- */
+function fGrade(){
+  if(T.mark)return markView();
+  const pend=D.subs.filter(s=>s.status==='submitted');
+  return `<h2>Grade work</h2><p class="muted">Mark on screen with a red pen, or let AI suggest marks. You review and adjust — nothing is saved until you approve.</p>
+  <div class="grid g2 mt">
+    <div class="card"><h3>Submitted by learners</h3><p class="small muted">Answers written on worksheet lines in ClassTrack, plus any pages they scanned.</p><div class="list">${pend.map(pendRow).join('')||'<div class="empty">No submissions waiting.</div>'}</div></div>
+    <div class="card"><h3>Mark a paper script</h3><p class="small muted">Snap or upload the memo and a learner's handwritten pages, then mark them with the red pen.</p><button class="btn btn-primary mt" data-act="scanStart" ${D.learners.length?'':'disabled'}>${ic('camera',18)}Start marking a script</button>${D.learners.length?'':'<p class="small muted mt">Add learners in the Register first.</p>'}</div>
+  </div>
+  <div class="card mt"><h3>Recently marked</h3><div class="list">${D.results.filter(p=>+p.max>0).slice(0,6).map(p=>`<div class="li click" data-act="go" data-arg="result:${p.id}">${avatar(lname(p.learner_id))}<div class="grow"><div class="ttl">${esc(p.title)}</div><div class="small muted">${esc(lname(p.learner_id))} · ${fmtTS(p.created_at)}</div></div>${scorePill(p)}</div>`).join('')||'<div class="empty">Nothing marked yet.</div>'}</div></div>`;
+}
+const ocrBox=m=>m.ocr?`<details class="mb" open><summary class="small" style="cursor:pointer;font-weight:700">What the app read — fix any mistakes, then mark again</summary><label class="lbl">Memo text</label><textarea class="inp" rows="5" data-in="ocrMemo" style="font-size:.85rem">${esc(m.ocr.memo)}</textarea><label class="lbl">Learner's text</label><textarea class="inp" rows="6" data-in="ocrWork" style="font-size:.85rem">${esc(m.ocr.work)}</textarea><button class="btn btn-sm mt" data-act="ocrApply">Mark again from this text</button></details>`:'';
+function itemsPanel(m){
+  return `<button class="btn btn-primary w100" data-act="aiSuggest" ${m.loading?'disabled':''}>${m.loading?'<span class="spin"></span> AI is reading the work…':ic('sparkle',18)+' Suggest marks with AI'}</button>
+  <p class="small muted" style="margin:8px 0 10px">Uses your Anthropic key and costs a little. Optional — you can also mark for free below.</p>
+  ${m.src==='submission'?`<button class="btn w100" data-act="autoMark">${ic('check',18)} Mark typed answers from the memo (free)</button><p class="small muted" style="margin:8px 0 14px">Compares what the learner typed with the memo key points you wrote for each question. No AI, no cost — always check the result.</p>`:'<div style="height:6px"></div>'}
+  
+  ${(m.src==='scan'?m.scans.length:(m.scanPaths||[]).length)?`<button class="btn w100" data-act="ocrRead">${ic('camera',18)} Read the pages &amp; mark from the memo (free)</button><p class="small muted" style="margin:8px 0 14px">Reads printed or typed text on the pages and in PDF memos, on your device. Handwriting is often misread, so check every mark. The first time it downloads the reader (about 10 MB).</p>`:''}${ocrBox(m)}
+  ${m.items.map((it,i)=>`<div class="qi"><div class="row between"><b>${it.qid?'Question '+esc(it.label):esc(it.label)}</b><span class="small muted">${it.max} mark${it.max==1?'':'s'}</span></div>
+    ${it.answer!=null?`<div class="ans">${esc(it.answer)||'<span class="muted small">No answer</span>'}</div>`:''}${it.memo?`<div class="memo">Memo: ${esc(it.memo)}</div>`:''}
+    <div class="row" style="margin-top:6px"><input class="pen-in mark" type="number" inputmode="decimal" min="0" max="${it.max}" step="0.5" value="${it.mark??''}" placeholder="–" data-in="gMark" data-i="${i}"><span class="pen" style="font-size:1.4rem">/ ${it.max}</span><span class="row" style="gap:4px;flex-wrap:nowrap"><button class="btn btn-sm btn-ghost" data-act="gQuick" data-arg="${i}|1" title="Full marks">✓ Full</button><button class="btn btn-sm btn-ghost" data-act="gQuick" data-arg="${i}|.5" title="Half marks">½</button><button class="btn btn-sm btn-ghost" data-act="gQuick" data-arg="${i}|0" title="No marks">✗ 0</button></span><input class="pen-in" style="flex:1;min-width:140px" placeholder="Comment…" value="${esc(it.comment)}" data-in="gComment" data-i="${i}"></div></div>`).join('')}
+  <label class="lbl">Overall feedback</label><textarea class="pen-in" data-in="gOverall" placeholder="Write feedback to the learner…">${esc(m.overall)}</textarea>
+  <div class="total-line pen">Total: <span id="g-total">${sum(m.items,i=>i.mark)}</span> / ${sum(m.items,i=>i.max)}</div>
+  <div class="row"><button class="btn btn-primary" data-act="gApprove" ${m.loading?'disabled':''}>${ic('check',18)}Approve &amp; save</button><button class="btn btn-ghost" data-act="gDiscard">Discard</button></div>`;
+}
+const pager=(id,items,cls='')=>`<div class="pager-bar"><button class="btn btn-sm btn-ghost" data-act="pgGo" data-arg="${id}|-1">‹ Prev</button><span class="small muted" id="${id}-ind">Page 1 of ${items.length}</span><button class="btn btn-sm btn-ghost" data-act="pgGo" data-arg="${id}|1">Next ›</button></div><div id="${id}" class="pager ${cls}">${items.map(h=>`<div class="pg">${h}</div>`).join('')}</div>`;
+function markView(){
+  const m=T.mark,a=m.assignmentId&&asg(m.assignmentId);
+  const imgs=m.src==='scan'?m.scans:m.scanPaths.map(p=>url(p));
+  const tools=[['pen',ic('pen',16)+' Pen'],['text','Aa Text'],['tick','✓ Tick'],['cross','✗ Cross'],['move','✋ Scroll']];
+  const pgs=[];
+  if(m.src==='submission'&&a){const n=sheetPg(a).length;sheetPg(a).forEach((_,i)=>pgs.push(`<div class="g-paper" data-pg="${i}">${paperHTML(a,m.answers,m.items,false,'sheet',true,i)}</div><div class="small muted" style="margin-top:6px">Worksheet${n>1?' · page '+(i+1)+' of '+n:''}</div>`));}
+  imgs.forEach((s,i)=>{pgs.push(`<div class="ink-wrap"><img src="${s}" alt="Page ${i+1}"><canvas class="inkcv draw" data-ink="p${i}"></canvas></div><div class="row between small muted" style="margin-top:6px">${m.src==='scan'?`Page ${i+1}<button class="btn btn-sm btn-danger" data-act="gWorkDel" data-arg="${i}">Remove page</button>`:`Learner's scanned page ${i+1}`}</div>`);});
+  const pages=pgs.length?pager('g-pages',pgs,(T.tool==='move'?'nodraw ':'')+(T.fit===false?'':'fit')):'';
+  const hasMemo=!!(m.memoImgs||[]).length,tab=hasMemo&&T.side==='memo'?'memo':'marks',sideOn=T.side!=='none';
+  const memoBody=`<div class="row between" style="margin-bottom:6px"><span class="small muted">Tap a memo page to enlarge it.</span><button class="btn btn-sm btn-ghost sync ${T.memoSync===false?'':'on'}" data-act="memoSync" title="Turn the memo to the same page as the work">Follow work pages</button></div>${pager('g-memo',m.memoImgs.map((d,i)=>`<img src="${d}" alt="Memo page ${i+1}" data-act="zoom">`),'memo')}`;
+  const sideCard=sideOn?`<aside class="card sidecard">${hasMemo?`<div class="sidetabs"><button class="${tab==='marks'?'on':''}" data-act="sideTab" data-arg="marks">Marks &amp; feedback</button><button class="${tab==='memo'?'on':''}" data-act="sideTab" data-arg="memo">Memo</button></div>`:`<h3>${m.src==='scan'?'4 · ':''}Marks &amp; feedback</h3>`}${tab==='memo'?memoBody:itemsPanel(m)}</aside>`:'';
+  const head=m.src==='scan'?`<div class="grid g2 mb">
+    <div class="card"><h3>1 · Learner &amp; task</h3><label class="lbl">Learner</label><select class="inp" data-ch="gLearner">${D.learners.map(l=>`<option value="${l.id}" ${l.id===m.learnerId?'selected':''}>${esc(fullName(l))}</option>`).join('')}</select>
+      <label class="lbl">Assessment title</label><input class="inp" value="${esc(m.title)}" data-in="gTitle"></div>
+    <div class="card"><h3>2 · Memo / rubric (optional)</h3><div class="row">${upBtns('gMemo','Snap memo','Upload memo (PDF or photo)')}</div>${m.memoImgs.length?`<div class="thumbs mt">${thumbsData(m.memoImgs,'gMemoDel')}</div>`:''}
+      <label class="lbl">Criteria — one per line: <i>description | marks | key points (optional, comma-separated)</i></label><textarea class="inp" data-in="gRubric" style="font-family:ui-monospace,monospace;font-size:.85rem">${esc(m.rubric)}</textarea><button class="btn btn-sm mt" data-act="gApplyRubric">Update criteria</button></div></div>`:`<div class="card mb"><h3>Memorandum (optional)</h3><p class="small muted">Upload the memo as a PDF or photos. The AI uses it when it suggests marks, and you can tap a page to enlarge it.</p><div class="row">${upBtns('gMemo','Snap memo','Upload memo (PDF or photo)')}</div>${(m.memoImgs||[]).length?`<div class="thumbs mt">${thumbsData(m.memoImgs,'gMemoDel')}</div>`:''}</div>`;
+  return `<div class="markwrap ${T.full?'full':''}">${T.full?`<div class="row between fullbar"><b>${esc(m.title)} · ${esc(lname(m.learnerId))}</b><button class="btn btn-sm btn-primary" data-act="fullView">✕ Exit full screen</button></div>`:''}<button class="back" data-act="gDiscard">${ic('back',18)}Back</button>
+  <div class="row between mb markhead"><div><h2 style="margin:0">${esc(m.title)}</h2><div class="muted">${esc(lname(m.learnerId))}${m.submittedAt?' · submitted '+fmtTS(m.submittedAt):''}</div></div><span class="pill draft">Draft · not saved yet</span></div>
+  <div class="markhead">${head}</div>
+  <div class="grade-layout ${sideOn?'':'solo'}"><div class="card"><div class="row between"><h3 style="margin:0">${m.src==='scan'?'3 · Learner\'s work':'Learner\'s work'}</h3>${m.src==='scan'?`<div class="row">${upBtns('gWork','Snap page','Upload pages')}</div>`:''}</div>
+    ${pages?`<div class="toolbar">${tools.map(([t,l])=>`<button class="btn btn-sm tool ${T.tool===t?'on':''}" data-act="tool" data-arg="${t}">${l}</button>`).join('')}${penBar()}<button class="btn btn-sm btn-ghost" data-act="inkUndo">Undo</button><button class="btn btn-sm btn-ghost" data-act="inkClear">Clear ink</button><button class="btn btn-sm btn-primary" data-act="fullView">${T.full?'✕ Exit full screen':'⛶ Full screen'}</button><button class="btn btn-sm btn-ghost" data-act="pgFit">⤢ ${T.fit===false?'Fit whole page':'Full width'}</button><button class="btn btn-sm btn-ghost" data-act="sideTab" data-arg="${sideOn?'none':'marks'}">${sideOn?'Hide panel':'Show marks / memo'}</button></div>
+    <p class="small muted" style="margin:0">Change page: tap Prev / Next, use the arrow keys, or pick ✋ Scroll and swipe.</p>${pages}`:`<div class="empty">No pages yet. Snap or upload the learner's handwritten work.</div>`}</div>
+  ${sideCard}</div></div>`;
+}
+
+/* ----- library ----- */
+const docBtns=()=>`<label class="btn btn-sm">${ic('camera',16)}Scan a page<input type="file" accept="image/*" capture="environment" hidden data-file="docUpload"></label><label class="btn btn-sm btn-ghost">${ic('upload',16)}Upload files<input type="file" accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv" multiple hidden data-file="docUpload"></label>`;
+const docRow=(d,canDel)=>`<div class="li"><div class="av">${ic('folder',18)}</div><div class="grow"><div class="ttl">${esc(d.title)}</div><div class="small muted">${d.by_kind==='learner'?esc(d.uploader_name)+' · ':''}${fmtTS(d.created_at)}${d.size?' · '+fmtSize(d.size):''}${d.audience==='facilitator'?' · private to facilitator':''}</div></div>${/pdf|image/.test(d.mime||'')?`<button class="btn btn-sm btn-ghost" data-act="viewDoc" data-arg="${d.id}">View</button>`:''}<button class="btn btn-sm" data-act="dlDoc" data-arg="${d.id}">${ic('upload',14)} Download</button>${canDel?`<button class="btn btn-sm btn-danger" data-act="delDoc" data-arg="${d.id}" title="Delete">✕</button>`:''}</div>`;
+function sheetCard(a,fac){
+  const subs=D.subs.filter(x=>x.assignment_id===a.id&&x.status!=='draft');
+  return `<div class="card"><div class="row" style="gap:14px;align-items:flex-start;flex-wrap:nowrap"><img src="${url(sheetPg(a)[0])}" class="thumb" alt="" data-act="zoom"><div style="flex:1;min-width:0">
+    <div class="row between"><h3 style="margin:0">${esc(a.title)}</h3>${a.published?'<span class="pill">Published</span>':'<span class="pill grey">Draft</span>'}</div>
+    <div class="small muted">${esc(a.subject)} · due ${a.due?fmtD(a.due):'—'} · ${sheetPg(a).length>1?sheetPg(a).length+' pages · ':''}${a.questions.length} questions · ${sum(a.questions,q=>q.marks)} marks</div>
+    <div class="small" style="margin-top:6px">${subs.length}/${D.learners.length} submitted · ${subs.filter(x=>x.status==='marked').length} marked</div>
+    <div class="row" style="margin-top:10px">${fac?`<button class="btn btn-sm" data-act="editSheet" data-arg="${a.id}">Edit</button><button class="btn btn-sm btn-ghost" data-act="togglePub" data-arg="${a.id}">${a.published?'Unpublish':'Publish'}</button>`:''}<button class="btn btn-sm btn-ghost" data-act="dlSheet" data-arg="${a.id}">Download</button>${fac?`<button class="btn btn-sm btn-danger" data-act="delSheet" data-arg="${a.id}">Delete</button>`:''}</div></div></div></div>`;
+}
+function bookCard(b){
+  const pgs=D.pages.filter(p=>p.book_id===b.id).sort((x,y)=>x.page_no-y.page_no);
+  return `<div class="card bookcard" data-act="go" data-arg="book:${b.id}"><div class="row" style="gap:14px;flex-wrap:nowrap">${pgs[0]?`<img class="thumb" src="${url(pgs[0].path)}" alt="">`:`<div class="thumb" style="display:grid;place-items:center;color:var(--muted)">${ic('book',28)}</div>`}<div style="min-width:0"><h3 style="margin:0">${esc(b.title)}</h3><div class="small muted">${esc(b.subject||'')}${b.subject?' · ':''}${pgs.length} page${pgs.length===1?'':'s'}</div></div></div></div>`;
+}
+function fLibrary(){
+  const tab=['sheets','books','docs'].includes(T.tab)?T.tab:'sheets';
+  let body='';
+  if(tab==='sheets')body=`<div class="row between mb"><p class="muted" style="margin:0">Worksheets learners write on, line by line. Scan a page, tap where the answer lines go, publish.</p><div class="row"><button class="btn btn-ghost" data-act="newSample">Use sample worksheet</button><button class="btn btn-primary" data-act="newSheet">${ic('upload',18)}New worksheet</button></div></div>
+    <div class="grid g2">${D.assignments.map(a=>sheetCard(a,true)).join('')||emptyCard('No worksheets yet.')}</div>`;
+  else if(tab==='books')body=`<div class="row between mb"><p class="muted" style="margin:0">Scan textbook or workbook pages once — the whole class can read and download them.</p><button class="btn btn-primary" data-act="newBook">＋ Add book</button></div>
+    <div class="grid g2">${D.books.map(bookCard).join('')||emptyCard('No books yet. Add one, then scan its pages.')}</div>`;
+  else body=`<div class="card mb"><h3>Share a document with the class</h3><label class="lbl">Title (optional)</label><input class="inp" id="doc-title" placeholder="e.g. Term 4 schedule"><div class="row mt">${docBtns()}</div></div>
+    <div class="card"><h3>Documents</h3><div class="list">${D.docs.map(d=>docRow(d,true)).join('')||'<div class="empty">Nothing here yet.</div>'}</div></div>`;
+  return `<h2>Library</h2>${tabsHTML(tab,[['sheets','Worksheets'],['books','Books &amp; workbooks'],['docs','Documents']],'libTab')}${body}`;
+}
+function bookView(id){
+  const b=D.books.find(x=>x.id===id);
+  if(!b)return backBtn('library','Library')+emptyCard('Book not found.');
+  const fac=isFac(),pgs=D.pages.filter(p=>p.book_id===id).sort((x,y)=>x.page_no-y.page_no);
+  return `${backBtn('library','Library')}<div class="row between mb"><div><h2 style="margin:0">${esc(b.title)}</h2><div class="muted">${esc(b.subject||'')}${b.subject?' · ':''}${pgs.length} page${pgs.length===1?'':'s'}</div></div>
+    <div class="row">${fac?`${upBtns('bookPages','Scan page','Upload pages')}<button class="btn btn-sm btn-danger" data-act="delBook" data-arg="${id}">Delete book</button>`:''}${pgs.length?`<button class="btn btn-sm btn-ghost" data-act="dlBook" data-arg="${id}">Download all</button>`:''}</div></div>
+  <div class="pgrid">${pgs.map((p,i)=>`<div class="pcard"><img src="${url(p.path)}" data-act="zoom" alt="Page ${i+1}"><div class="row between small"><b>Page ${i+1}</b><button class="btn btn-sm btn-ghost" data-act="dlPage" data-arg="${p.id}" title="Download">⬇</button></div>
+    ${fac?`<div class="row"><button class="btn btn-sm btn-ghost" data-act="movePage" data-arg="${p.id}|-1" title="Move earlier">◀</button><button class="btn btn-sm btn-ghost" data-act="movePage" data-arg="${p.id}|1" title="Move later">▶</button><button class="btn btn-sm" data-act="pageToSheet" data-arg="${p.id}">Make worksheet</button><button class="btn btn-sm btn-danger" data-act="delPage" data-arg="${p.id}">✕</button></div>`:''}</div>`).join('')||emptyCard(fac?'No pages yet — scan or upload the first page above.':'No pages yet.')}</div>`;
+}
+function assignEditor(){
+  const d=T.draft;if(!d)return fLibrary();
+  d.pgs=d.pgs||[];d.ep=Math.min(d.ep||0,Math.max(0,d.pgs.length-1));
+  const cur=d.questions.find(q=>q.id===d.cur),pgx=d.pgs[d.ep],img=pgx&&(pgx.data||url(pgx.path)),np=d.pgs.length;
+  const lp=l=>(l.pg||0)===d.ep;
+  return `<button class="back" data-act="draftCancel">${ic('back',18)}Back</button><h2>${d.id?'Edit worksheet':'New worksheet'}</h2>
+  <div class="grade-layout"><div>${img?`<div class="note mb">${ic('pen',18)}<div>Tap the worksheet wherever learners should write. Each tap adds an answer line for <b>Question ${cur?cur.num:1}</b>. Answer lines are <b>optional</b> — without them, learners type or write anywhere on the page. Lines already printed on the page? Tap <b>Find printed answer lines</b>. Worksheet has more pages? Use <b>Add pages</b> — learners get every page.</div></div>
+    <div class="pager-bar"><button class="btn btn-sm btn-ghost" data-act="epGo" data-arg="-1" ${d.ep<=0?'disabled':''}>‹ Prev</button><span class="small muted"><b>Page ${d.ep+1} of ${np}</b></span><button class="btn btn-sm btn-ghost" data-act="epGo" data-arg="1" ${d.ep>=np-1?'disabled':''}>Next ›</button></div>
+    <div class="paper edit-paper" id="edit-paper"><img src="${img}" alt="" draggable="false">${d.lines.filter(lp).map(l=>{const q=d.questions.find(q=>q.id===l.qid);return `<div class="eline" style="left:${l.x}%;top:${l.y}%;width:${l.w}%"><span>Q${q?q.num:'?'}<button data-act="delLine" data-arg="${l.id}" title="Remove line">✕</button></span></div>`;}).join('')}</div>
+    <div class="row mt"><button class="btn btn-sm btn-primary" data-act="autoLines">${ic('sparkle',16)} Find printed answer lines</button><label class="btn btn-sm">${ic('upload',16)}Add pages<input type="file" accept="image/*,application/pdf,.pdf" multiple hidden data-file="draftAddPages"></label><label class="btn btn-sm btn-ghost">${ic('camera',16)}Replace this page<input type="file" accept="image/*,application/pdf,.pdf" hidden data-file="draftSheet"></label>${np>1?`<button class="btn btn-sm btn-danger" data-act="epDel">Remove this page</button>`:''}</div>`
+    :`<div class="card empty" style="padding:50px 20px"><div class="role-ic" style="margin:0 auto 12px">${ic('upload',24)}</div><h3>Scan or upload the worksheet</h3><p>Use clear photos of the pages (JPG/PNG) or a PDF — every page of a PDF is added. Pick several files to make a multi-page worksheet.</p><div class="row" style="justify-content:center"><label class="btn btn-sm">${ic('camera',16)}Snap worksheet<input type="file" accept="image/*" capture="environment" hidden data-file="draftAddPages"></label><label class="btn btn-sm btn-ghost">${ic('upload',16)}Upload pages<input type="file" accept="image/*,application/pdf,.pdf" multiple hidden data-file="draftAddPages"></label></div></div>`}</div>
+  <aside class="card"><label class="lbl" style="margin-top:0">Title</label><input class="inp" value="${esc(d.title)}" data-in="dField" data-k="title" placeholder="e.g. Fractions worksheet">
+    <div class="grid g2" style="gap:10px"><div><label class="lbl">Subject</label><input class="inp" value="${esc(d.subject)}" data-in="dField" data-k="subject"></div><div><label class="lbl">Due date</label><input class="inp" type="date" value="${d.due||''}" data-in="dField" data-k="due"></div></div>
+    <div class="row between" style="margin:18px 0 8px"><h3 style="margin:0">Questions &amp; memo</h3><button class="btn btn-sm" data-act="addQ">+ Question</button></div>
+    ${d.questions.map(q=>`<div class="qi ${q.id===d.cur?'sel':''}"><div class="row between"><label class="row" style="gap:8px;cursor:pointer;font-weight:700"><input type="radio" name="curq" value="${q.id}" ${q.id===d.cur?'checked':''} data-ch="setCurQ"> Question ${q.num}</label><span class="small muted">${d.lines.filter(l=>l.qid===q.id).length} line(s)</span><button class="btn btn-sm btn-ghost" data-act="delQ" data-arg="${q.id}">✕</button></div>
+      <div class="row" style="margin-top:8px"><input class="inp" style="width:80px" type="number" min="1" value="${q.marks}" title="Marks" data-in="qField" data-k="marks" data-q="${q.id}"><input class="inp" style="flex:1;min-width:150px" placeholder="Memo: key points, comma-separated" value="${esc(q.memo)}" data-in="qField" data-k="memo" data-q="${q.id}"></div></div>`).join('')||'<p class="small muted">Add a question, then tap the paper to place its answer lines.</p>'}
+    <div class="row mt"><button class="btn btn-primary" data-act="draftSave" data-arg="1">Publish to class</button><button class="btn btn-ghost" data-act="draftSave" data-arg="0">Save draft</button></div><p class="small muted mt">You can publish without any answer lines. Publishing sends it to every learner straight away — each gets their own copy to fill in.</p><p class="small muted">${BUILD}</p></aside></div>`;
+}
+
+/* ----- portfolios ----- */
+function portList(){
+  const q=T.search.trim().toLowerCase();
+  return D.learners.filter(l=>fullName(l).toLowerCase().includes(q)).map(l=>{const ps=D.results.filter(p=>p.learner_id===l.id),avg=avgOf(ps);
+    const tm=D.subs.filter(x=>x.learner_id===l.id&&x.status==='submitted').length;
+    return `<div class="li click" data-act="go" data-arg="portfolios:${l.id}">${avatar(fullName(l))}<div class="grow"><div class="ttl">${esc(fullName(l))}</div><div class="small muted">${ps.length} item${ps.length===1?'':'s'} · ${D.comments.filter(c=>c.learner_id===l.id).length} comments</div></div>${tm?`<span class="pill amber">${tm} to mark</span>`:''}${avg==null?'<span class="pill grey">No marks</span>':`<span class="pill ${avg<50?'red':avg<70?'amber':''}">Avg ${avg}%</span>`}</div>`;}).join('')||'<div class="empty">No learners match.</div>';
+}
+function fPort(){
+  if(U.param)return portDetail(U.param);
+  return `<h2>Portfolios</h2><p class="muted">Every marked assessment, scan and comment — safe in one place.</p>
+  <div class="card"><div style="position:relative"><span style="position:absolute;left:14px;top:12px;color:var(--muted)">${ic('search',18)}</span><input class="inp" style="padding-left:42px" placeholder="Search learners…" value="${esc(T.search)}" data-in="pSearch"></div><div class="list mt" id="plist">${portList()}</div></div>`;
+}
+function portEntry(p){
+  const hasView=(p.items&&p.items.length)||(p.scans&&p.scans.length);
+  return `<div class="card mb"><div class="row between"><div><h3 style="margin:0">${esc(p.title)}</h3><div class="small muted">${fmtTS(p.created_at)} · ${p.source==='submission'?'Worksheet in ClassTrack':p.source==='scan'?'Paper script':'Uploaded scan'}</div></div>${+p.max?scorePill(p):'<span class="pill grey">Scan</span>'}</div>
+  ${p.feedback?`<p class="pen" style="font-size:1.35rem;margin:10px 0 0">${esc(p.feedback)}</p>`:''}
+  ${p.scans?.length&&!p.items?.length?`<div class="thumbs mt">${thumbs(p.scans)}</div>`:''}
+  ${hasView?`<button class="btn btn-sm mt" data-act="go" data-arg="result:${p.id}">View marked work</button>`:''}</div>`;
+}
+function waiting(id){
+  const ss=D.subs.filter(x=>x.learner_id===id&&x.status!=='marked'&&x.status!=='draft'),dr=D.subs.filter(x=>x.learner_id===id&&x.status==='draft'&&asg(x.assignment_id));
+  return ss.map(x=>{const a=asg(x.assignment_id);return `<div class="card mb" style="border:2px solid var(--amber,#e0a030)"><div class="row between"><div><h3 style="margin:0">${esc(a?.title||'Worksheet')}</h3><div class="small muted">Submitted ${fmtTS(x.submitted_at)} · worksheet in ClassTrack${x.scans?.length?' · '+x.scans.length+' scanned page'+(x.scans.length===1?'':'s'):''}</div></div><span class="pill amber">Waiting for marking</span></div><button class="btn btn-primary btn-sm mt" data-act="gradeSub" data-arg="${x.id}">${ic('pen',16)} Mark now</button></div>`;}).join('')
+  +dr.map(x=>`<div class="li mb"><div class="grow"><div class="ttl">${esc(asg(x.assignment_id).title)}</div><div class="small muted">In progress — not submitted yet</div></div><span class="pill grey">In progress</span></div>`).join('');
+}
+function portDetail(id){
+  const l=learner(id);if(!l)return backBtn('portfolios','All learners')+emptyCard('Learner not found.');
+  const ps=D.results.filter(p=>p.learner_id===id),at=attStats(id),cm=D.comments.filter(c=>c.learner_id===id),avg=avgOf(ps);
+  return `${backBtn('portfolios','All learners')}
+  <div class="card row" style="gap:16px">${avatar(fullName(l),'lg')}<div style="flex:1"><h2 style="margin:0">${esc(fullName(l))}</h2><div class="muted">${esc(D.klass?.name||'')}</div></div><div class="row"><span class="pill">Average ${avg==null?'—':avg+'%'}</span><span class="pill ${at.rate<80?'amber':''}">Attendance ${at.t?at.rate+'%':'—'}</span></div></div>
+  <div class="grade-layout mt"><div><div class="row between mb"><h3 style="margin:0">Assessments &amp; scans</h3><label class="btn btn-sm">${ic('upload',16)}Add scan<input type="file" accept="image/*,application/pdf,.pdf" hidden data-file="portScan" data-l="${id}"></label></div>${waiting(id)}${ps.map(portEntry).join('')||(waiting(id)?'':emptyCard('No assessments yet.'))}</div>
+  <aside class="card"><h3>Comments</h3><textarea class="inp" id="cm-text" placeholder="Add a note about this learner…"></textarea><button class="btn btn-primary btn-sm mt" data-act="addComment" data-arg="${id}">Add comment</button>
+  <div class="list mt">${cm.map(c=>`<div class="li"><div class="grow"><div>${esc(c.text)}</div><div class="small muted">${fmtTS(c.created_at)}</div></div></div>`).join('')||'<div class="empty small">No comments yet.</div>'}</div></aside></div>`;
+}
+function resultView(id){
+  const fac=isFac(),r=D.results.find(x=>x.id===id),bk=fac?backBtn('portfolios'+(r?':'+r.learner_id:''),'Portfolio'):backBtn('marks','All marks');
+  if(!r)return bk+emptyCard('Result not found.');
+  T.viewInk=r.ink||{};
+  const sub=r.submission_id&&D.subs.find(s=>s.id===r.submission_id),a=sub&&asg(sub.assignment_id);
+  const pages=(a?`${sheetHTML(a,sub.answers,r.items,false,'sheet')}`:'')+(r.scans||[]).map((p,i)=>`<div class="ink-wrap" style="margin-top:14px"><img src="${url(p)}" alt="Page ${i+1}"><canvas class="inkcv" data-ink="p${i}"></canvas></div><div class="row between small muted">Page ${i+1}<button class="btn btn-sm btn-ghost" data-act="dlMarked" data-arg="${r.id}|${i}">⬇ Download marked page</button></div>`).join('');
+  return `${bk}<div class="row between mb"><div><h2 style="margin:0">${esc(r.title)}</h2><div class="muted">${esc(lname(r.learner_id))} · ${fmtTS(r.created_at)}</div></div>${+r.max?scorePill(r):''}</div>
+  <div class="grade-layout"><div>${pages||emptyCard('No page to show.')}</div>
+  <aside class="card">${r.feedback?`<h3>Feedback</h3><p class="pen" style="font-size:1.45rem">${esc(r.feedback)}</p>`:''}<div class="list">${(r.items||[]).map(i=>`<div class="li"><div class="grow"><b>${i.qid?'Question '+esc(i.label):esc(i.label)}</b>${i.comment?`<div class="pen" style="font-size:1.2rem">${esc(i.comment)}</div>`:''}</div><span class="pen" style="font-size:1.4rem">${i.mark}/${i.max}</span></div>`).join('')}</div>${fac?`<button class="btn btn-sm btn-danger mt" data-act="delResult" data-arg="${r.id}">Delete this result</button>`:''}</aside></div>`;
+}
+
+/* ----- register ----- */
+function fReg(){
+  const d=T.regDate,day=D.att[d]||{},n=D.learners.length,c={P:0,L:0,A:0};
+  D.learners.forEach(l=>{if(c[day[l.id]]!=null)c[day[l.id]]++;});
+  const dates=Object.keys(D.att).sort().slice(-10);
+  return `<div class="row between mb"><div><h2 style="margin:0">Attendance register</h2><p class="muted" style="margin:0">${fmtD(d)} · ${esc(D.klass.name)}</p></div>
+  <div class="row"><input type="date" class="inp" style="width:auto" value="${d}" data-ch="regDate"><button class="btn" data-act="checkin">${ic('clip',18)}Check-in</button><button class="btn btn-ghost" data-act="printReg">${ic('print',18)}Print</button><button class="btn btn-ghost" data-act="regPdf" data-arg="month">${ic('upload',18)}Register PDF</button><button class="btn btn-ghost" data-act="regPdf" data-arg="list">${ic('upload',18)}Class list PDF</button></div></div>
+  <div class="grid g4 mb">${[['P','Present',''],['L','Late','amber'],['A','Absent','red']].map(([k,t,cl])=>`<div class="card"><span class="pill ${cl}">${t}</span><div class="big-n">${c[k]}</div></div>`).join('')}<div class="card"><span class="pill grey">Not marked</span><div class="big-n">${n-c.P-c.L-c.A}</div></div></div>
+  <div class="grade-layout"><div class="card"><div class="row between"><h3 style="margin:0">Class list · ${n} learner${n===1?'':'s'}</h3><button class="btn btn-sm" data-act="allPresent">Mark all present</button></div>
+    <div class="list mt">${D.learners.map(l=>{const s=day[l.id],st=attStats(l.id);return `<div class="li">${avatar(fullName(l))}<div class="grow"><div class="ttl">${esc(fullName(l))}</div><div class="small muted">${st.t?st.rate+'% attendance':'No records yet'}</div></div><div class="seg">${['P','L','A'].map(k=>`<button class="${k} ${s===k?'on':''}" data-act="setAtt" data-arg="${l.id}|${k}" title="${LBL[k]}">${k}</button>`).join('')}</div><button class="btn btn-sm btn-ghost" data-act="relLearner" data-arg="${l.id}" title="Reset this learner's sign-in (if they forgot their details or someone else signed up as them)">🔑</button><button class="btn btn-sm btn-ghost" data-act="delLearner" data-arg="${l.id}" title="Remove learner">✕</button></div>`;}).join('')||'<div class="empty">No learners yet — add them below.</div>'}</div>
+    <h3 class="mt" style="margin-bottom:6px">Add a learner</h3><p class="small muted" style="margin-top:0">Learners sign in with this exact name and surname.</p>
+    <div class="row"><input class="inp" style="flex:1;min-width:130px" id="new-name" placeholder="Name"><input class="inp" style="flex:1;min-width:130px" id="new-surname" placeholder="Surname"><button class="btn btn-primary" data-act="addLearner">Add</button></div></div>
+  <aside class="stack"><div class="card"><h3>Trend · last ${dates.length} days</h3><div class="bars">${dates.map(dt=>{const p=pct(Object.values(D.att[dt]).filter(x=>x!=='A').length,n);return `<div class="bar" title="${fmtD(dt)}: ${p}%"><span>${p}%</span><i style="height:${Math.max(3,p*.7)}%"></i><span>${+dt.slice(8)}</span></div>`;}).join('')||'<div class="empty">No records yet</div>'}</div></div>
+    <div class="card"><h3>By learner</h3>${D.learners.map(l=>[l,attStats(l.id)]).sort((a,b)=>a[1].rate-b[1].rate).map(([l,s])=>`<div class="row" style="margin:8px 0;flex-wrap:nowrap"><span class="small" style="width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(fullName(l))}</span><div class="meter ${s.rate<80?'low':''}"><i style="width:${s.rate}%"></i></div><b class="small" style="width:40px;text-align:right">${s.t?s.rate+'%':'—'}</b></div>`).join('')||'<div class="empty small">No learners</div>'}<p class="small muted">Amber = below 80% — worth a follow-up.</p></div>
+    <div class="card"><h3>Class settings &amp; import</h3><label class="lbl">Mark as late after</label><input class="inp" type="time" value="${lateAfter()}" data-ch="cutoff">
+      <label class="lbl">Import class list — one per line: <i>Name Surname</i>, or CSV with name, surname</label><textarea class="inp" id="imp" placeholder="Amahle Dlamini&#10;Thabo Mokoena"></textarea>
+      <div class="row mt"><button class="btn btn-sm btn-primary" data-act="importRoster">Import</button><label class="btn btn-sm btn-ghost">${ic('upload',16)}CSV file<input type="file" accept=".csv,.txt,text/csv,text/plain" hidden data-file="importFile"></label></div>
+      <div class="row mt"><button class="btn btn-sm btn-ghost" data-act="renameClass">Rename class</button><button class="btn btn-sm btn-danger" data-act="delClass">Delete class</button></div></div></aside></div>`;
+}
+function renderKiosk(msg){
+  const k=$('#kiosk');if(!k)return;if(!T.kiosk){k.hidden=true;k.innerHTML='';return;}k.hidden=false;const d=D.att[localISO()]||{};
+  k.innerHTML=`<div class="kiosk-top"><div class="logo light">${badge()}ClassTrack</div><button class="btn btn-oc" data-act="closeKiosk">Exit check-in</button></div>
+  <div class="kiosk-body"><h1>Good day! Tap your name to check in.</h1><p style="opacity:.8">${new Date().toLocaleDateString('en-ZA',{weekday:'long',day:'numeric',month:'long'})} · ${hhmm()} · late after ${lateAfter()}</p>
+  ${msg?`<div class="kiosk-msg">${msg}</div>`:''}
+  <div class="kiosk-grid">${D.learners.map(l=>{const s=d[l.id];return `<button class="kiosk-tile ${s?'done':''}" data-act="kioskTap" data-arg="${l.id}">${avatar(fullName(l))}<span>${esc(fullName(l))}</span>${s?`<em>${LBL[s]}</em>`:''}</button>`;}).join('')||'<p>No learners in this class yet.</p>'}</div></div>`;
+}
+
+/* ================= LEARNER ================= */
+function lView(){switch(U.view){case 'work':return lWork();case 'doWork':return lDo(U.param);case 'library':return lLibrary();case 'book':return bookView(U.param);case 'marks':return lMarks();case 'result':return resultView(U.param);default:return lHome();}}
+function subStatus(a){const s=mySub(a.id);return !s?['To do','amber']:s.status==='draft'?['In progress','blue']:s.status==='submitted'?['Submitted','grey']:['Marked',''];}
+const workRow=a=>{const [t,c]=subStatus(a);return `<div class="li click" data-act="go" data-arg="doWork:${a.id}"><img src="${url(sheetPg(a)[0])}" class="thumb" style="width:46px;height:58px;cursor:pointer" alt=""><div class="grow"><div class="ttl">${esc(a.title)}</div><div class="small muted">${esc(a.subject)} · due ${a.due?fmtD(a.due):'—'}</div></div><span class="pill ${c}">${t}</span></div>`;};
+function lHome(){
+  const me=U.me,todo=D.assignments.filter(a=>{const s=mySub(a.id);return !s||s.status==='draft';}),st=(D.att[localISO()]||{})[me.id],marks=D.results;
+  return `<section class="banner"><div><p class="eyebrow">${new Date().toLocaleDateString('en-ZA',{weekday:'long',day:'numeric',month:'long'})} · ${esc(D.klass?.name||'')}</p><h1>Hi ${esc(me.name)}! 👋</h1><p style="margin:0">${todo.length?`You have ${todo.length} piece${todo.length===1?'':'s'} of work to complete.`:'You are all caught up.'}</p></div>
+    <div class="row">${st==='P'||st==='L'?`<span class="btn btn-cream" style="cursor:default">${ic('check',18)}Checked in · ${LBL[st]}</span>`:`<button class="btn btn-cream" data-act="selfCheckin">${ic('clip',18)}Check in for today</button>`}<button class="btn btn-oc" data-act="live">${ic('video',18)}Join live class</button></div></section>
+  <div class="grid g2"><div class="card"><h3>Collect your work</h3><div class="list">${todo.map(workRow).join('')||'<div class="empty">No new work right now.</div>'}</div></div>
+  <div class="card"><h3>Latest marks</h3><div class="list">${marks.slice(0,4).map(p=>`<div class="li click" data-act="go" data-arg="result:${p.id}"><div class="grow"><div class="ttl">${esc(p.title)}</div><div class="small muted">${fmtTS(p.created_at)}</div></div>${+p.max?scorePill(p):'<span class="pill grey">Scan</span>'}</div>`).join('')||'<div class="empty">No marks yet.</div>'}</div></div></div>`;
+}
+const lWork=()=>`<h2>My work</h2><p class="muted">Worksheets your facilitator has shared with you. Write on the lines, scan extra pages, then submit.</p><div class="card"><div class="list">${D.assignments.map(workRow).join('')||'<div class="empty">Nothing assigned yet.</div>'}</div></div>
+  ${D.assignments.length?`<div class="card mt"><h3>Download blank worksheets</h3><div class="list">${D.assignments.map(a=>`<div class="li"><div class="grow ttl">${esc(a.title)}</div><button class="btn btn-sm" data-act="dlSheet" data-arg="${a.id}">⬇ Download</button></div>`).join('')}</div></div>`:''}`;
+function lDo(aid){
+  const a=asg(aid);if(!a)return backBtn('work','My work')+emptyCard('This work is no longer available.');
+  const s=mySub(aid),locked=s&&s.status!=='draft',[t,c]=subStatus(a),res=s&&D.results.find(r=>r.submission_id===s.id);T.viewInk=(s&&s.answers&&s.answers.__ink)||{};T.learnerInk=T.viewInk;
+  return `${backBtn('work','My work')}
+  <div class="row between mb"><div><h2 style="margin:0">${esc(a.title)}</h2><div class="muted">${esc(a.subject)} · due ${a.due?fmtD(a.due):'—'} · ${sum(a.questions,q=>q.marks)} marks</div></div><span class="pill ${c}">${t}</span></div>
+  ${locked?`<div class="note mb">${ic('check',18)}<div>${s.status==='marked'&&res?`Marked! <a href="#" data-act="go" data-arg="result:${res.id}">See your marks &amp; feedback</a>.`:`Submitted ${fmtTS(s.submitted_at)}. Your facilitator will mark it soon.`}</div></div>`:`<div class="note mb">${ic('pen',18)}<div>Same tools as your facilitator: <b>Pen</b> to write by hand in any colour, <b>Aa Text</b> to tap anywhere (or a line) and type, <b>✋ Scroll</b> to move the page. Your work saves automatically.</div></div>`}
+  <div class="grade-layout"><div>${locked?'':`<div class="toolbar">${[['draw',ic('pen',16)+' Pen'],['type','Aa Text'],['move','✋ Scroll']].map(([t,l])=>`<button class="btn btn-sm tool lm ${(T.lmode||'type')===t?'on':''}" data-act="lmode" data-arg="${t}">${l}</button>`).join('')}${penBar()}<button class="btn btn-sm btn-ghost" data-act="inkUndo">Undo</button><button class="btn btn-sm btn-ghost" data-act="inkClear">Clear ink</button></div>`}<div id="l-paper" class="${T.lmode==='draw'?'':'nodraw'}">${sheetHTML(a,s?.answers||{},null,!locked,locked?null:'mine',!locked)}</div></div>
+  <aside class="card"><h3>Scan &amp; attach pages</h3><p class="small muted">Did some working on paper? Snap a photo and attach it.</p>
+    ${locked?'':`<div class="row">${upBtns('lScan','Snap page','Upload')}</div>`}${s?.scans?.length?`<div class="thumbs mt">${thumbs(s.scans,locked?null:'lScanDel')}</div>`:''}
+    ${locked?'':`<button class="btn btn-primary w100 mt" data-act="lSubmit" data-arg="${aid}">${ic('upload',18)}Submit for marking</button><p class="small muted mt" id="save-state">${s?'Draft saved':'Not started yet'}</p>`}
+    <button class="btn btn-ghost btn-sm mt" data-act="dlSheet" data-arg="${aid}">⬇ Download blank worksheet</button></aside></div>`;
+}
+function lLibrary(){
+  const tab=['books','docs'].includes(T.tab)?T.tab:'books';
+  const mine=D.docs.filter(d=>d.audience==='class'||d.learner_id===U.me.id);
+  let body='';
+  if(tab==='books')body=`<div class="grid g2">${D.books.map(bookCard).join('')||emptyCard('Your facilitator hasn\'t added any books yet.')}</div>`;
+  else body=`<div class="card mb"><h3>Send a document</h3><p class="small muted">Scan a page or upload a file (PDF, Word, photo…) up to 10 MB.</p>
+    <label class="lbl">Title (optional)</label><input class="inp" id="doc-title" placeholder="e.g. My project report">
+    <label class="lbl">Who can see it?</label><select class="inp" id="doc-aud"><option value="facilitator">Only my facilitator</option><option value="class">The whole class</option></select>
+    <div class="row mt">${docBtns()}</div></div>
+    <div class="card"><h3>Documents</h3><div class="list">${mine.map(d=>docRow(d,d.learner_id===U.me.id)).join('')||'<div class="empty">Nothing here yet.</div>'}</div></div>`;
+  return `<h2>Library</h2>${tabsHTML(tab,[['books','Books &amp; workbooks'],['docs','Documents']],'libTab')}${body}`;
+}
+function lMarks(){
+  const ps=D.results,avg=avgOf(ps),at=attStats(U.me.id);
+  return `<h2>Marks &amp; feedback</h2><div class="grid g3 mb"><div class="card"><span class="small muted">Average</span><div class="big-n">${avg==null?'—':avg+'%'}</div></div><div class="card"><span class="small muted">Portfolio items</span><div class="big-n">${ps.length}</div></div><div class="card"><span class="small muted">Attendance</span><div class="big-n">${at.t?at.rate+'%':'—'}</div></div></div>
+  ${ps.map(portEntry).join('')||emptyCard('No marks yet — once your facilitator approves your work it shows up here.')}`;
+}
+/* ClassTrack · Supabase edition · actions & events */
+const DEF_RUBRIC='Q1 Correct definition of photosynthesis | 2 | process, sunlight, water, carbon dioxide\nQ2 Labelled diagram of a leaf | 4 | chlorophyll, stomata, vein\nQ3 Explains the role of sunlight with an example | 4 | energy, glucose';
+const modal=html=>{$('#modal').innerHTML=`<div class="modal-bg" data-act="closeModalBg"><div class="modal">${html}</div></div>`;};
+function handleErr(e){console.error(e);const m=(e&&e.message)||String(e);toast(/failed to fetch|networkerror|load failed/i.test(m)?'Could not reach the ClassTrack server. Check your internet, then try again. If it keeps happening, the database may be paused — open your Supabase project and tap Restore.':m);}
+function refreshG(){
+  const m=T.mark;if(!m)return;const t=$('#g-total');if(t)t.textContent=sum(m.items,i=>i.mark);
+  if(m.src==='submission'){const a=asg(m.assignmentId);if(a)$$('.g-paper').forEach(p=>{p.innerHTML=paperHTML(a,m.answers,m.items,false,'sheet',true,+p.dataset.pg||0);setupInk(p);});}
+}
+function dropInkPage(ink,i){const out={};Object.entries(ink).forEach(([k,v])=>{if(k.startsWith('sheet')){out[k]=v;return;}const n=+k.slice(1);if(n<i)out[k]=v;else if(n>i)out['p'+(n-1)]=v;});return out;}
+async function setClass(id){
+  U.classId=id;localStorage.setItem('ct.classId',id);D.klass=D.classes.find(c=>c.id===id)||null;
+  Object.assign(T,{mark:null,draft:null});U.view='dash';U.param=null;
+  const done=busy('Loading class…');try{await loadData();}finally{done();}render();
+}
+async function enterLearner(id){
+  const {error}=await sb.rpc('learner_claim',{p_learner:id,p_name:(T.lp||{}).name||'',p_surname:(T.lp||{}).surname||''});if(error){if(/already has an account/i.test(error.message))await sb.auth.signOut();throw error;}
+  T.matches=null;await afterLogin();
+}
+async function addLearners(list){
+  const have=new Set(D.learners.map(l=>(l.name.trim()+'|'+l.surname.trim()).toLowerCase())),rows=[];let dup=0;
+  list.forEach(x=>{const k=(x.name+'|'+x.surname).toLowerCase();if(have.has(k)){dup++;return;}have.add(k);rows.push({class_id:U.classId,name:x.name,surname:x.surname});});
+  if(rows.length){const {error}=await sb.from('learners').insert(rows);if(error)throw error;}
+  await loadData();toast(`${rows.length} learner${rows.length===1?'':'s'} added${dup?` · ${dup} already in the class`:''}`);render();
+}
+function ensureSubLocal(aid){
+  let s=mySub(aid);
+  if(!s){s={id:null,assignment_id:aid,learner_id:U.me.id,class_id:U.classId,answers:{},scans:[],status:'draft',submitted_at:null};D.subs.push(s);}
+  return s;
+}
+async function saveDraft(aid){
+  clearTimeout(T.st);const s=mySub(aid);
+  if(!s||s.status!=='draft'){T.pendingSave=0;return;}
+  const {data,error}=await sb.from('submissions').upsert({assignment_id:aid,learner_id:U.me.id,class_id:U.classId,answers:s.answers,scans:s.scans,status:'draft'},{onConflict:'assignment_id,learner_id'}).select().single();
+  T.pendingSave=0;
+  if(error){toast('Could not save: '+error.message);return;}
+  s.id=data.id;const e=$('#save-state');if(e)e.textContent='Draft saved ✓ '+hhmm();
+}
+function saveBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);}
+
+const A={
+  /* ----- navigation & auth ----- */
+  go:arg=>{const [v,p]=arg.split(':');go(v,p||null);},
+  role:r=>{T.authStep=r;T.authMsg='';T.matches=null;render();},
+  authBack:()=>{if(T.authStep==='facCode')T.authStep='facilitator';else if(T.matches)T.matches=null;else T.authStep='role';T.authMsg='';render();},
+  facSend:async mode=>{
+    const code=$('#f-code').value.trim(),name=$('#f-name').value.trim(),surname=$('#f-surname').value.trim(),email=$('#f-email').value.trim().toLowerCase();
+    T.pending={code,name,surname,email};
+    if(!code||!name||!surname||!/^\S+@\S+\.\S+$/.test(email)){T.authMsg='Please fill in the organisation code, your name, your surname and a valid email.';render();return;}
+    const done=busy('Checking…');
+    try{
+      const {data:org,error}=await sb.rpc('check_org_code',{p_code:code});if(error)throw error;
+      if(!org){T.authMsg='That organisation code was not recognised. Please check it with your organisation.';render();return;}
+      localStorage.setItem('ct.pending',JSON.stringify(T.pending));
+      const pw=($('#f-pass')||{}).value||'';
+      if(mode!=='link'){
+        if(!pw){T.authMsg='Please type a password. If you are new here, choose one now (8 or more characters) — you will use it every time you sign in.';render();return;}
+        const {error:pe}=await sb.auth.signInWithPassword({email,password:pw});
+        if(!pe){await afterLogin();return;}
+        if(pw.length<8){T.authMsg='That password did not work. If you are new here, choose a password with at least 8 characters.';render();return;}
+        const {data:su,error:se}=await sb.auth.signUp({email,password:pw});
+        if(se){
+          if(se.code==='user_already_exists'||/registered|already|exists/i.test(se.message||''))T.authMsg='That email already has an account, but the password does not match. Try again, or tap “Email me a sign-in link instead”.';
+          else throw se;
+          render();return;
+        }
+        if(!su.session){T.authMsg='Your account could not be opened straight away. Tap “Email me a sign-in link instead” and use the link in your email.';render();return;}
+        await afterLogin();return;
+      }
+      const {data:{session}}=await sb.auth.getSession();
+      if(session&&!session.user.is_anonymous&&(session.user.email||'').toLowerCase()===email){await afterLogin();return;}
+      if(session)await sb.auth.signOut();
+      const {error:e2}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}});
+      if(e2)throw e2;
+      T.authStep='facCode';T.authMsg='';render();
+    }finally{done();}
+  },
+  facVerify:async()=>{
+    const token=$('#f-token').value.trim();if(!token)return toast('Enter the code from your email.');
+    const done=busy('Signing in…');
+    try{const {error}=await sb.auth.verifyOtp({email:T.pending.email,token,type:'email'});if(error)throw error;await afterLogin();}
+    finally{done();}
+  },
+  learnerGo:async()=>{
+    const name=$('#l-name').value.trim(),surname=$('#l-surname').value.trim(),email=$('#l-email').value.trim().toLowerCase(),pw=$('#l-pass').value;
+    T.lp={name,surname,email};
+    if(!name||!surname){T.authMsg='Please type both your name and your surname.';render();return;}
+    if(!/^\S+@\S+\.\S+$/.test(email)){T.authMsg='Please type a valid email address.';render();return;}
+    if(!pw){T.authMsg='Please type your password. If this is your first time, choose one now (8 or more characters).';render();return;}
+    const done=busy('Signing you in…');
+    try{
+      let {data:{session}}=await sb.auth.getSession();
+      if(session&&(session.user.is_anonymous||(session.user.email||'').toLowerCase()!==email)){await sb.auth.signOut();session=null;}
+      if(!session){
+        const {error:pe}=await sb.auth.signInWithPassword({email,password:pw});
+        if(pe){
+          if(pw.length<8){T.authMsg='That password did not work. If this is your first time, choose a password with at least 8 characters.';render();return;}
+          const {data:su,error:se}=await sb.auth.signUp({email,password:pw});
+          if(se){if(se.code==='user_already_exists'||/registered|already|exists/i.test(se.message||''))T.authMsg='That email already has an account, but the password does not match. Try again.';else throw se;render();return;}
+          if(!su.session){T.authMsg='Your account could not be opened straight away. Please try again in a moment.';render();return;}
+        }
+      }
+      const {data:ls}=await sb.from('learner_sessions').select('learner_id').maybeSingle();
+      if(ls){await afterLogin();return;}
+      const {data,error}=await sb.rpc('learner_lookup',{p_name:name,p_surname:surname});if(error)throw error;
+      if(!data||!data.length){await sb.auth.signOut();T.authMsg=`We couldn't find "${name} ${surname}" waiting for an account. Check the spelling, or ask your facilitator to add you (or reset your access if you already signed up).`;render();return;}
+      if(data.length>1){T.matches=data;render();return;}
+      await enterLearner(data[0].learner_id);
+    }finally{done();}
+  },
+  learnerPick:async id=>{const done=busy('Entering class…');try{await enterLearner(id);}finally{done();}},
+  relLearner:async id=>{
+    if(!confirm(`Reset sign-in for ${lname(id)}? They will be able to create their account again with name, surname, email and a new password. Their work and marks stay.`))return;
+    const {error}=await sb.rpc('release_learner',{p_learner:id});if(error)throw error;toast('Done — they can sign up again.');
+  },
+  logout:()=>{if(U.role==='facilitator'&&!confirm('Sign out of ClassTrack? You can sign back in with your password if you have set one — otherwise you will need a new email link.'))return;signOutAll();},
+  settings:()=>{
+    const m=U.me;
+    modal(`<div class="row between"><h2 style="margin:0">Account</h2><button class="btn btn-ghost icon-btn" data-act="closeModal">${ic('x',18)}</button></div>
+    <div class="list mt"><div class="li"><div class="grow"><div class="ttl">${esc(fullName(m))}</div><div class="small muted">${isFac()?esc(m.email)+' · '+esc(U.org):esc(D.klass?.name||'')}</div></div><span class="pill">${isFac()?'Facilitator':'Learner'}</span></div></div>
+    ${isFac()?`<h3 class="mt" style="margin-bottom:4px">Password</h3><p class="small muted" style="margin:0 0 8px">Set a password so you can sign in on any device without waiting for an email.</p><input class="inp" id="set-pass" type="password" autocomplete="new-password" placeholder="New password (8+ characters)"><div class="row mt"><button class="btn btn-primary" data-act="setPass">Save password</button></div>`:''}
+    <div class="row mt"><button class="btn btn-danger" data-act="logout">Sign out</button></div>`);
+  },
+  setPass:async()=>{
+    const pw=($('#set-pass')||{}).value||'';
+    if(pw.length<8){toast('Use at least 8 characters.');return;}
+    const {error}=await sb.auth.updateUser({password:pw});if(error)throw error;
+    $('#set-pass').value='';toast('Password saved. You can now sign in with your email and password.');
+  },
+  closeModal:()=>{$('#modal').innerHTML='';},
+  closeModalBg:(_,el,e)=>{if(e.target===el)A.closeModal();},
+  zoom:(_,el)=>{$('#modal').innerHTML=`<div class="lightbox" data-act="closeModal"><img src="${el.src}" alt=""></div>`;},
+
+  /* ----- classes ----- */
+  switchClass:v=>{if(v==='__new'){render();A.newClass();}else if(v&&v!==U.classId)return setClass(v);},
+  newClass:()=>modal(`<h2>New training class</h2><p class="muted">Give your training programme class a name. You can add learners right after.</p><label class="lbl">Class name</label><input class="inp" id="cls-name" placeholder="e.g. Level 4 Plumbing — Group A"><div class="row mt"><button class="btn btn-primary" data-act="saveClass">Create class</button><button class="btn btn-ghost" data-act="closeModal">Cancel</button></div>`),
+  saveClass:async()=>{
+    const name=$('#cls-name').value.trim();if(!name)return toast('Please name your class.');
+    const {data,error}=await sb.from('classes').insert({org_id:U.me.org_id,facilitator_id:U.me.id,name}).select().single();if(error)throw error;
+    D.classes.push(data);A.closeModal();await setClass(data.id);toast('Class created — now add your learners in the Register.');
+  },
+  renameClass:()=>modal(`<h2>Rename class</h2><label class="lbl">Class name</label><input class="inp" id="cls-name" value="${esc(D.klass.name)}"><div class="row mt"><button class="btn btn-primary" data-act="saveRename">Save</button><button class="btn btn-ghost" data-act="closeModal">Cancel</button></div>`),
+  saveRename:async()=>{const name=$('#cls-name').value.trim();if(!name)return;const {error}=await sb.from('classes').update({name}).eq('id',U.classId);if(error)throw error;D.klass.name=name;A.closeModal();render();},
+  delClass:async()=>{
+    if(!confirm(`Delete "${D.klass.name}" and ALL its learners, marks, attendance and books? This cannot be undone.`))return;
+    const {error}=await sb.from('classes').delete().eq('id',U.classId);if(error)throw error;
+    D.classes=D.classes.filter(c=>c.id!==U.classId);const next=D.classes[0];
+    if(next)await setClass(next.id);else{U.classId=null;D.klass=null;resetD();render();}
+  },
+
+  /* ----- register ----- */
+  regDate:v=>{T.regDate=v||localISO();render();},
+  cutoff:async v=>{const t=v||'08:00';const {error}=await sb.from('classes').update({late_after:t}).eq('id',U.classId);if(error)throw error;D.klass.late_after=t;toast('Late time saved');},
+  setAtt:async arg=>{
+    const [id,k]=arg.split('|'),day=T.regDate,rec=D.att[day]||(D.att[day]={}),cur=rec[id];
+    if(cur===k)delete rec[id];else rec[id]=k;render();
+    const r=cur===k?await sb.from('attendance').delete().eq('learner_id',id).eq('day',day)
+      :await sb.from('attendance').upsert({class_id:U.classId,learner_id:id,day,status:k},{onConflict:'learner_id,day'});
+    if(r.error){toast('Could not save: '+r.error.message);await reload();}
+  },
+  allPresent:async()=>{
+    const day=T.regDate,rec=D.att[day]||(D.att[day]={}),rows=D.learners.filter(l=>!rec[l.id]).map(l=>({class_id:U.classId,learner_id:l.id,day,status:'P'}));
+    if(!rows.length)return;rows.forEach(r=>rec[r.learner_id]='P');render();
+    const {error}=await sb.from('attendance').upsert(rows,{onConflict:'learner_id,day'});if(error){toast(error.message);await reload();}
+  },
+  addLearner:async()=>{const name=$('#new-name').value.trim(),surname=$('#new-surname').value.trim();if(!name||!surname)return toast('Enter both a name and a surname.');await addLearners([{name,surname}]);},
+  importRoster:async()=>{const list=parseRoster($('#imp').value);if(!list.length)return toast('No names found — use one "Name Surname" per line.');await addLearners(list);},
+  importFile:async files=>{if(!files[0])return;const list=parseRoster(await files[0].text());if(!list.length)return toast('No names found in that file.');await addLearners(list);},
+  delLearner:async id=>{
+    if(!confirm(`Remove ${lname(id)} from the class? Their marks, attendance and submissions will be deleted.`))return;
+    const {error}=await sb.from('learners').delete().eq('id',id);if(error)throw error;await loadData();render();
+  },
+  printReg:()=>{
+    const d=new Date(T.regDate+'T12:00'),y=d.getFullYear(),m=d.getMonth(),days=[];
+    for(let i=1;i<=31;i++){const x=new Date(y,m,i,12);if(x.getMonth()!==m)break;if(x.getDay()%6)days.push(localISO(x));}
+    const mn=d.toLocaleDateString('en-ZA',{month:'long',year:'numeric'});
+    $('#print').innerHTML=`<h2 style="margin:0">ClassTrack · Attendance register</h2><p>${esc(D.klass.name)} · ${esc(U.org)} · ${mn} · P = Present, L = Late, A = Absent</p>
+    <table><thead><tr><th>#</th><th>Learner</th>${days.map(x=>`<th>${+x.slice(8)}</th>`).join('')}<th>P</th><th>L</th><th>A</th></tr></thead><tbody>${D.learners.map((l,i)=>{const c={P:0,L:0,A:0};const cells=days.map(x=>{const s=D.att[x]?.[l.id]||'';if(s)c[s]++;return `<td>${s}</td>`;}).join('');return `<tr><td>${i+1}</td><td class="n">${esc(fullName(l))}</td>${cells}<td>${c.P}</td><td>${c.L}</td><td>${c.A}</td></tr>`;}).join('')}</tbody></table>
+    <p style="margin-top:24px">Facilitator signature: ______________________ &nbsp;&nbsp; Date: ____________</p>`;
+    window.print();
+  },
+  regPdf:async kind=>{
+    if(!D.learners.length)return toast('Add learners to the class first.');
+    const done=busy('Making your PDF…');
+    try{
+      const J=await loadJsPdf(),d=new Date(T.regDate+'T12:00'),y=d.getFullYear(),mo=d.getMonth(),days=[];
+      for(let i=1;i<=31;i++){const x=new Date(y,mo,i,12);if(x.getMonth()!==mo)break;if(x.getDay()%6)days.push(localISO(x));}
+      const mn=d.toLocaleDateString('en-ZA',{month:'long',year:'numeric'}),month=kind==='month';
+      const doc=new J({orientation:month?'landscape':'portrait',unit:'pt',format:'a4'}),W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight();
+      doc.setFont('helvetica','bold');doc.setFontSize(17);doc.setTextColor(10,66,52);doc.text(month?'Attendance register':'Class list',40,46);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(70);
+      doc.text(D.klass.name+' · '+U.org+(month?' · '+mn:''),40,64);
+      if(month)doc.text('P = Present    L = Late    A = Absent',W-40,64,{align:'right'});
+      const ls=[...D.learners].sort((a,b)=>(a.surname+' '+a.name).localeCompare(b.surname+' '+b.name));
+      let head,body,styles,colStyles={};
+      if(month){
+        head=[['#','Learner',...days.map(x=>String(+x.slice(8))),'P','L','A','%']];
+        body=ls.map((l,i)=>{const c={P:0,L:0,A:0};const cells=days.map(x=>{const s=(D.att[x]||{})[l.id]||'';if(s)c[s]++;return s;});const t=c.P+c.L+c.A;return [i+1,fullName(l),...cells,c.P,c.L,c.A,t?Math.round((c.P+c.L)/t*100)+'%':''];});
+        styles={fontSize:days.length>20?7.5:8.5,cellPadding:3,halign:'center',lineWidth:.4,lineColor:[150,150,150]};colStyles={1:{halign:'left',cellWidth:110}};
+      }else{
+        head=[['#','Surname','Name','Attendance','Signature']];
+        body=ls.map((l,i)=>{const s=attStats(l.id);return [i+1,l.surname,l.name,s.t?s.rate+'%':'—',''];});
+        styles={fontSize:11,cellPadding:6,halign:'left',lineWidth:.4,lineColor:[150,150,150],minCellHeight:26};colStyles={0:{halign:'center',cellWidth:30},3:{halign:'center',cellWidth:85},4:{cellWidth:150}};
+      }
+      doc.autoTable({startY:80,head,body,styles,columnStyles:colStyles,headStyles:{fillColor:[10,66,52],textColor:255},margin:{left:40,right:40},
+        didParseCell:h=>{if(month&&h.section==='body'&&h.column.index>=2&&h.column.index<2+days.length){const v=h.cell.raw;if(v==='A'){h.cell.styles.textColor=[192,57,43];h.cell.styles.fontStyle='bold';}else if(v==='L')h.cell.styles.textColor=[180,110,0];else if(v==='P')h.cell.styles.textColor=[20,110,60];}}});
+      let fy=doc.lastAutoTable.finalY+34;if(fy>H-50){doc.addPage();fy=60;}
+      doc.setTextColor(70);doc.setFontSize(10);
+      if(month)doc.text('Facilitator signature: ________________________      Date: ______________',40,fy);
+      doc.setFontSize(8);doc.setTextColor(130);doc.text('Made with ClassTrack · '+new Date().toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'}),40,H-24);
+      doc.save(((month?'Attendance register':'Class list')+' - '+D.klass.name+(month?' - '+mn:'')+'.pdf').replace(/[\\/:*?"<>|]/g,'-'));
+    }finally{done();}
+  },
+  autoLines:async()=>{
+    const d=T.draft,px=d&&d.pgs&&d.pgs[d.ep||0],src=px&&(px.data||url(px.path)),pgi=d&&(d.ep||0);
+    if(!src)return toast('Add the worksheet image first.');
+    const done=busy('Looking for the printed lines…');let found;
+    try{found=await detectLines(src);}finally{done();}
+    if(!found.length)return toast('I could not find printed lines on this page. Tap the page to place answer lines yourself.');
+    if(d.lines.some(l=>(l.pg||0)===pgi)&&!confirm('Replace the answer lines you have already placed on this page?'))return;
+    const ys=found.map(l=>l.y),gaps=ys.slice(1).map((y,i)=>y-ys[i]),sorted=[...gaps].sort((a,b)=>a-b),med=sorted.length?sorted[Math.floor(sorted.length/2)]:0;
+    const uniform=gaps.length>0&&gaps.every(g=>g<med*1.4);let mode='gap';
+    if(uniform)mode=confirm('The lines are evenly spaced.\n\nOK = every line is its own question.\nCancel = all lines belong to ONE question.')?'own':'one';
+    const lim=Math.max(med*1.9,3.2);
+    d.lines=d.lines.filter(l=>(l.pg||0)!==pgi);d.questions=d.questions.filter(x=>d.lines.some(l=>l.qid===x.id));d.questions.forEach((x,i)=>x.num=i+1);let q=null,prev=null;const q0=d.questions.length;
+    found.forEach(l=>{
+      if(!q||mode==='own'||(mode==='gap'&&l.y-prev>lim)){q={id:uid(),num:d.questions.length+1,marks:1,memo:''};d.questions.push(q);}
+      d.lines.push({id:uid(),qid:q.id,pg:pgi,x:+l.x.toFixed(2),y:+l.y.toFixed(2),w:+l.w.toFixed(2)});prev=l.y;
+    });
+    d.cur=(d.questions[q0]||d.questions[0]).id;render();
+    toast('Found '+found.length+' line'+(found.length===1?'':'s')+' in '+d.questions.length+' question'+(d.questions.length===1?'':'s')+'. Check them, remove any that are wrong (✕), and set the marks.');
+  },
+  addFree:(x,y,pg=0)=>{
+    const aid=U.param,a=asg(aid);if(!a)return;
+    const s=ensureSubLocal(aid);s.answers.__txt=s.answers.__txt||[];
+    const f={id:uid(),pg,x,y,w:Math.min(48,98-x),v:''};s.answers.__txt.push(f);
+    const p=$('#l-paper');if(!p)return;
+    p.innerHTML=sheetHTML(a,s.answers,null,true,'mine',true);setupInk(p);bindFree();
+    const el=p.querySelector('[data-fl="'+f.id+'"]');if(el)el.focus();
+  },
+  freeText:(v,el)=>{
+    const aid=U.param,s=ensureSubLocal(aid),f=(s.answers.__txt||[]).find(x=>x.id===el.dataset.fl);if(!f)return;
+    f.v=v;T.pendingSave=1;clearTimeout(T.st);T.st=setTimeout(()=>saveDraft(aid).catch(handleErr),700);const e=$('#save-state');if(e)e.textContent='Saving…';
+  },
+  pgGo:arg=>{const [id,dir]=arg.split('|'),el=document.getElementById(id);if(el)el.scrollBy({left:(+dir)*(el.clientWidth+14),behavior:'smooth'});},
+  fullView:()=>{T.full=!T.full;document.body.classList.toggle('nofs',!!T.full);render();if(!T.full)window.scrollTo(0,0);},
+  pgFit:()=>{T.fit=(T.fit===false);render();},
+  memoSide:()=>{T.memoSide=(T.memoSide===false);render();},
+  sideTab:v=>{T.side=v;render();},
+  memoSync:()=>{T.memoSync=(T.memoSync===false);render();},
+  checkin:()=>{T.kiosk=true;renderKiosk();},
+  closeKiosk:()=>{T.kiosk=false;renderKiosk();render();},
+  kioskTap:async id=>{
+    const day=localISO(),rec=D.att[day]||(D.att[day]={}),n=esc(learner(id).name);
+    if(rec[id]==='P'||rec[id]==='L')renderKiosk(`${n}, you're already checked in today.`);
+    else{
+      const s=hhmm()>lateAfter()?'L':'P';rec[id]=s;renderKiosk(`Welcome, ${n}! Marked <b>${LBL[s]}</b> at ${hhmm()}.`);
+      const {error}=await sb.from('attendance').upsert({class_id:U.classId,learner_id:id,day,status:s},{onConflict:'learner_id,day'});
+      if(error){delete rec[id];renderKiosk();toast(error.message);}
+    }
+    clearTimeout(T.kt);T.kt=setTimeout(()=>T.kiosk&&renderKiosk(),3500);
+  },
+  selfCheckin:async()=>{
+    const {data,error}=await sb.rpc('learner_checkin');if(error)throw error;
+    if(data!=='already')(D.att[localISO()]||(D.att[localISO()]={}))[U.me.id]=data;
+    toast(data==='already'?'Already checked in':`Checked in · ${LBL[data]} at ${hhmm()}`);render();
+  },
+
+  /* ----- marking ----- */
+  gradeSub:id=>{
+    T.pg={};const sub=D.subs.find(s=>s.id===id),a=sub&&asg(sub.assignment_id);if(!a)return toast('Worksheet not found.');
+    const ans=sub.answers||{};
+    T.mark={src:'submission',subId:id,assignmentId:a.id,learnerId:sub.learner_id,title:a.title,submittedAt:sub.submitted_at,answers:ans,scanPaths:sub.scans||[],overall:'',ink:{},memoImgs:[],loading:false,
+      items:a.questions.map(q=>({key:q.id,qid:q.id,label:String(q.num),max:+q.marks,memo:q.memo||'',answer:a.lines.filter(l=>l.qid===q.id).map(l=>ans[l.id]||'').filter(Boolean).join(' '),mark:null,comment:''}))};
+    T.tool='pen';go('grade');
+  },
+  scanStart:()=>{T.pg={};T.mark={src:'scan',learnerId:D.learners[0]?.id,title:'Class test',rubric:DEF_RUBRIC,items:parseRubric(DEF_RUBRIC),overall:'',memoImgs:[],scans:[],scanPaths:[],ink:{},loading:false};T.tool='pen';render();window.scrollTo(0,0);},
+  gMark:(v,el)=>{const it=T.mark.items[+el.dataset.i];it.mark=v===''?null:Math.max(0,Math.min(it.max,+v));refreshG();},
+  gQuick:arg=>{const [i,f]=arg.split('|'),it=T.mark.items[+i];if(!it)return;it.mark=Math.round(it.max*(+f)*2)/2;const inp=$(`input[data-in="gMark"][data-i="${i}"]`);if(inp)inp.value=it.mark;refreshG();},
+  autoMark:()=>{
+    const m=T.mark;if(!m||m.src!=='submission')return;
+    if(!m.items.some(i=>(i.memo||'').trim()))return toast('Add memo key points to the questions first (in the worksheet editor).');
+    if(m.items.some(i=>i.mark!=null)&&!confirm('Replace the marks you have already entered?'))return;
+    const r=localGrade(m);
+    m.items.forEach(it=>{const s=r.items.find(x=>x.id===it.key);if(s&&(it.memo||'').trim()){it.mark=Math.max(0,Math.min(it.max,s.mark));it.comment=s.comment||'';}});
+    m.overall=r.overall;render();toast('Marked from your memo key points — check each answer, then approve.');
+  },
+  gComment:(v,el)=>{T.mark.items[+el.dataset.i].comment=v;refreshG();},
+  gOverall:v=>{T.mark.overall=v;},
+  gLearner:v=>{T.mark.learnerId=v;},
+  gTitle:v=>{T.mark.title=v;},
+  gRubric:v=>{T.mark.rubric=v;},
+  gApplyRubric:()=>{const m=T.mark,old=m.items;m.items=parseRubric(m.rubric).map(it=>{const o=old.find(x=>x.label===it.label);return o?{...it,mark:o.mark==null?null:Math.min(o.mark,it.max),comment:o.comment}:it;});render();},
+  gMemo:async f=>{const m=T.mark,tx=[];m.memoImgs.push(...await readImages(f,1400,t=>tx.push(t)));if(tx.length)m.memoText=((m.memoText||'')+'\n'+tx.join('\n')).trim();if(T.mark===m)render();},
+  gMemoDel:i=>{T.mark.memoImgs.splice(+i,1);if(!T.mark.memoImgs.length)T.mark.memoText='';render();},
+  gWork:async f=>{const m=T.mark,tx=[];m.scans.push(...await readImages(f,1600,t=>tx.push(t)));if(tx.length)m.workText=((m.workText||'')+'\n'+tx.join('\n')).trim();if(T.mark===m)render();},
+  ocrMemo:v=>{if(T.mark&&T.mark.ocr)T.mark.ocr.memo=v;},
+  ocrWork:v=>{if(T.mark&&T.mark.ocr)T.mark.ocr.work=v;},
+  ocrRead:async()=>{
+    const m=T.mark;if(!m)return;
+    const pages=m.src==='scan'?m.scans.length:(m.scanPaths||[]).length;
+    if(!pages&&!m.items.some(i=>(i.answer||'').trim()))return toast("Add the learner's pages first.");
+    let done=busy('Starting the reader… (first time it downloads about 10 MB)');
+    try{
+      const memo=[],work=[];
+      if((m.memoText||'').trim())memo.push(m.memoText);
+      else for(const [i,d] of (m.memoImgs||[]).entries()){done();done=busy('Reading memo page '+(i+1)+' of '+m.memoImgs.length+'…');memo.push(await ocrImage(d));}
+      if(m.src==='scan'&&(m.workText||'').trim())work.push(m.workText);
+      else{
+        const imgs=m.src==='scan'?m.scans:[];
+        const list=m.src==='scan'?imgs:m.scanPaths;
+        for(const [i,p] of list.entries()){done();done=busy("Reading learner's page "+(i+1)+' of '+list.length+'…');work.push(await ocrImage(m.src==='scan'?p:await urlToData(url(p))));}
+      }
+      m.ocr={memo:memo.join('\n'),work:work.join('\n')};
+    }catch(e){handleErr(e);return;}finally{done();}
+    A.ocrApply();
+  },
+  ocrApply:()=>{
+    const m=T.mark;if(!m||!m.ocr)return;
+    const r=freeMark(m);
+    if(!r.applied){render();return toast('No key points to check against. Add them in the rubric (third column), in each question, or upload a memo with numbered answers.');}
+    r.rows.forEach(x=>{if(x.mark==null)return;const it=m.items[x.i];it.mark=Math.max(0,Math.min(it.max,x.mark));it.comment=x.comment;});
+    render();
+    toast(r.whole?'Marked, but I could not see question numbers on the pages, so each question was matched against the whole page. Check carefully.':'Marked '+r.applied+' item'+(r.applied===1?'':'s')+(r.skipped?' · '+r.skipped+' had no key points':'')+' — check each one, then approve.');
+  },
+  gWorkDel:i=>{const m=T.mark;m.scans.splice(+i,1);m.ink=dropInkPage(m.ink,+i);render();},
+  tool:t=>{T.tool=t;$$('.tool').forEach(b=>b.classList.toggle('on',b.dataset.arg===t));const g=$('#g-pages');if(g)g.classList.toggle('nodraw',t==='move');},
+  inkUndo:()=>{const src=inkCtx(),a=src&&src[T.lastInk];if(a&&a.length){a.pop();redrawInk();if(T.inkSaved)T.inkSaved();}},
+  inkClear:()=>{const src=inkCtx();if(!src)return;Object.values(src).forEach(a=>{if(Array.isArray(a))a.length=0;});redrawInk();if(T.inkSaved)T.inkSaved();},
+  penCol:v=>{if(!/^#[0-9a-f]{6}$/i.test(v))return;T.col=v;try{localStorage.setItem('ct.pencol',v);}catch{}$$('.sw').forEach(b=>b.classList.toggle('on',b.dataset.arg===v));$$('.swc').forEach(i=>{if(i.value!==v)i.value=v;});},
+  lmode:v=>{T.lmode=v==='draw'||v==='move'?v:'type';$$('.lm').forEach(b=>b.classList.toggle('on',b.dataset.arg===T.lmode));const p=$('#l-paper');if(p)p.classList.toggle('nodraw',T.lmode!=='draw');},
+  aiSuggest:async()=>{
+    const m=T.mark;if(m.src==='scan'&&!m.scans.length)return toast("Add the learner's pages first.");
+    m.loading=true;render();
+    try{
+      const images=[];
+      (m.memoImgs||[]).forEach((d,i)=>images.push({label:`Memorandum / rubric page ${i+1}`,data:d}));
+      if(m.src==='scan')m.scans.forEach((d,i)=>images.push({label:`Learner's work, page ${i+1}`,data:d}));
+      else for(const [i,p] of m.scanPaths.entries())images.push({label:`Learner's scanned page ${i+1}`,data:await urlToData(url(p))});
+      const body={title:m.title,items:m.items.map(({key,label,max,memo,answer,qid})=>({key,label:qid?'Question '+label:label,max,memo,answer})),images};
+      const {data,error}=await sb.functions.invoke('ai-mark',{body});
+      let r=data;
+      if(error||!data||data.error){
+        if(m.src==='submission'){r=localGrade(m);toast('AI service is not set up yet — used a simple keyword match instead.');}
+        else throw new Error((data&&data.error)||'AI marking is not set up. You can still mark with the pen and the quick-mark buttons (✓ Full, ½, ✗ 0).');
+      }else toast('Suggestions ready — review, adjust and approve.');
+      m.items.forEach(it=>{const s=(r.items||[]).find(x=>x.id===it.key);if(s){it.mark=Math.max(0,Math.min(it.max,Math.round((+s.mark||0)*2)/2));it.comment=s.comment||'';}});
+      m.overall=r.overall||m.overall;
+    }catch(e){handleErr(e);}
+    m.loading=false;if(T.mark===m)render();
+  },
+  gApprove:async()=>{
+    const m=T.mark;
+    if(m.src==='scan'&&!m.scans.length&&!confirm('No learner pages attached. Save the marks only?'))return;
+    if(m.items.some(i=>i.mark==null)&&!confirm('Some items have no mark yet and will count as 0. Approve anyway?'))return;
+    const done=busy('Saving to portfolio…');
+    try{
+      let scans=m.scanPaths||[];
+      if(m.src==='scan'){scans=[];for(const d of m.scans){const p=`${U.classId}/private/${m.learnerId}/scans/${uid()}.jpg`;await upload(p,d,'image/jpeg');scans.push(p);}}
+      const row={class_id:U.classId,learner_id:m.learnerId,title:(m.title||'Assessment').trim(),score:sum(m.items,i=>i.mark),max:sum(m.items,i=>i.max),feedback:(m.overall||'').trim(),
+        items:m.items.map(i=>({qid:i.qid||null,label:i.label,max:i.max,mark:i.mark??0,comment:i.comment,answer:i.answer??null})),scans,ink:cleanInk(m.ink),source:m.src,assignment_id:m.assignmentId||null,submission_id:m.subId||null};
+      const {error}=await sb.from('results').insert(row);if(error)throw error;
+      if(m.subId){const {error:e2}=await sb.from('submissions').update({status:'marked'}).eq('id',m.subId);if(e2)throw e2;}
+      const who=lname(m.learnerId).split(' ')[0];T.mark=null;await loadData();render();toast(`Approved and saved to ${who}'s portfolio ✓`);
+    }finally{done();}
+  },
+  gDiscard:()=>{
+    const m=T.mark,dirty=m&&(m.items.some(i=>i.mark!=null||i.comment)||m.overall||Object.values(m.ink).some(a=>a.length)||(m.src==='scan'&&m.scans.length));
+    if(dirty&&!confirm('Discard this marking? Nothing has been saved.'))return;T.mark=null;render();
+  },
+
+  /* ----- library: worksheets ----- */
+  libTab:k=>{T.tab=k;render();},
+  newSheet:()=>{T.draft={id:null,title:'',subject:'',due:localISO(addDays(new Date(),7)),pgs:[],ep:0,questions:[],lines:[],cur:null,published:false};addQ();go('assign');},
+  newSample:async()=>{const s=await sampleSheet();T.draft={id:null,title:'Photosynthesis worksheet',subject:'Natural Sciences',due:localISO(addDays(new Date(),7)),pgs:[{data:s.data,path:null}],ep:0,questions:s.questions,lines:s.lines,cur:s.questions[0].id,published:false};go('assign');},
+  editSheet:id=>{const a=asg(id);T.draft={id:a.id,title:a.title,subject:a.subject,due:a.due,pgs:sheetPg(a).map(p=>({data:null,path:p})),ep:0,questions:structuredClone(a.questions),lines:structuredClone(a.lines),cur:a.questions[0]?.id||null,published:a.published,hadPages:!!(a.pages&&a.pages.length)};go('assign');},
+  addQ:()=>{addQ();render();},
+  delQ:id=>{const d=T.draft;d.questions=d.questions.filter(q=>q.id!==id);d.lines=d.lines.filter(l=>l.qid!==id);d.questions.forEach((q,i)=>q.num=i+1);if(d.cur===id)d.cur=d.questions[0]?.id||null;render();},
+  setCurQ:v=>{T.draft.cur=v;render();},
+  dField:(v,el)=>{T.draft[el.dataset.k]=v;},
+  qField:(v,el)=>{const q=T.draft.questions.find(q=>q.id===el.dataset.q);if(q)q[el.dataset.k]=el.dataset.k==='marks'?Math.max(1,+v||1):v;},
+  delLine:id=>{T.draft.lines=T.draft.lines.filter(l=>l.id!==id);render();},
+  epGo:v=>{const d=T.draft;d.ep=Math.max(0,Math.min(d.pgs.length-1,(d.ep||0)+(+v)));render();window.scrollTo(0,0);},
+  epDel:()=>{const d=T.draft,i=d.ep||0;if(d.pgs.length<2||!confirm('Remove page '+(i+1)+' and its answer lines?'))return;d.pgs.splice(i,1);d.lines=d.lines.filter(l=>(l.pg||0)!==i);d.lines.forEach(l=>{if((l.pg||0)>i)l.pg--;});d.ep=Math.max(0,i-1);render();},
+  draftAddPages:async f=>{const imgs=await readImages(f,1800);if(!imgs.length||!T.draft)return;if(T.draft.pgs.length+imgs.length>150){toast('A worksheet can have up to 150 pages.');return;}imgs.forEach(d=>T.draft.pgs.push({data:d,path:null}));T.draft.ep=T.draft.pgs.length-imgs.length;render();toast(imgs.length+' page'+(imgs.length===1?'':'s')+' added.');},
+  draftSheet:async f=>{const [img]=await readImages(f.slice(0,1),1800);const d=T.draft;if(img&&d){d.pgs[d.ep||0]={data:img,path:null};render();}},
+  draftSave:async pub=>{
+    const d=T.draft,publish=pub==='1';
+    if(!d.pgs.length)return toast('Add the worksheet image first.');
+    if(!d.title.trim())return toast('Give the worksheet a title.');
+    const done=busy('Saving worksheet…');
+    try{
+      const paths=[];
+      for(const p of d.pgs){if(p.data){const np=`${U.classId}/shared/sheets/${uid()}.jpg`;await upload(np,p.data,'image/jpeg');p.path=np;p.data=null;}paths.push(p.path);}
+      const row={class_id:U.classId,title:d.title.trim(),subject:d.subject||'',due:d.due||null,sheet_path:paths[0],questions:d.questions,lines:d.lines,published:publish};
+      if(paths.length>1||d.hadPages)row.pages=paths.length>1?paths:null;
+      const r=d.id?await sb.from('assignments').update(row).eq('id',d.id):await sb.from('assignments').insert(row);
+      if(r.error){if(/pages/.test(r.error.message||''))throw new Error('To publish multi-page worksheets, run the one-line database update from the instructions (adds the "pages" column), then try again.');throw r.error;}
+      T.draft=null;T.tab='sheets';await loadData();go('library');toast(publish?'Published — every learner can collect it now ✓':'Draft saved');
+    }finally{done();}
+  },
+  draftCancel:()=>{if(confirm('Leave the editor? Unsaved changes will be lost.')){T.draft=null;go('library');}},
+  togglePub:async id=>{const a=asg(id);const {error}=await sb.from('assignments').update({published:!a.published}).eq('id',id);if(error)throw error;a.published=!a.published;render();},
+  delSheet:async id=>{
+    const a=asg(id);if(!confirm('Delete this worksheet and learners\' unmarked submissions? Marked results stay in portfolios.'))return;
+    const {error}=await sb.from('assignments').delete().eq('id',id);if(error)throw error;
+    const gone=sheetPg(a).filter(p=>!D.pages.some(b=>b.path===p)&&!D.assignments.some(x=>x.id!==id&&sheetPg(x).includes(p)));
+    if(gone.length)await removeFiles(gone);
+    await loadData();render();
+  },
+  dlSheet:async id=>{const a=asg(id),ps=sheetPg(a);for(let i=0;i<ps.length;i++)await download(ps[i],`${a.title}${ps.length>1?' - page '+(i+1):''}.${extOf(ps[i])}`);},
+
+  /* ----- library: books ----- */
+  newBook:()=>modal(`<h2>Add a book</h2><p class="muted">Create the book first, then scan its pages with your camera or upload photos.</p><label class="lbl">Title</label><input class="inp" id="bk-title" placeholder="e.g. Plumbing Workbook — Module 2"><label class="lbl">Subject (optional)</label><input class="inp" id="bk-subject"><div class="row mt"><button class="btn btn-primary" data-act="saveBook">Create book</button><button class="btn btn-ghost" data-act="closeModal">Cancel</button></div>`),
+  saveBook:async()=>{
+    const title=$('#bk-title').value.trim();if(!title)return toast('Give the book a title.');
+    const {data,error}=await sb.from('books').insert({class_id:U.classId,title,subject:$('#bk-subject').value.trim()}).select().single();if(error)throw error;
+    A.closeModal();await loadData();go('book',data.id);
+  },
+  delBook:async id=>{
+    const b=D.books.find(x=>x.id===id);if(!confirm(`Delete "${b.title}" and all its pages?`))return;
+    const pg=D.pages.filter(p=>p.book_id===id).map(p=>p.path).filter(p=>!D.assignments.some(a=>sheetPg(a).includes(p)));
+    const {error}=await sb.from('books').delete().eq('id',id);if(error)throw error;
+    await removeFiles(pg);await loadData();T.tab='books';go('library');
+  },
+  bookPages:async files=>{
+    const id=U.param,imgs=await readImages(files,1800);if(!imgs.length)return;
+    const done=busy(`Uploading page 1 of ${imgs.length}…`);let ok=0,bad=0,why='';
+    try{
+      let next=Math.max(0,...D.pages.filter(p=>p.book_id===id).map(p=>p.page_no))+1;
+      for(let i=0;i<imgs.length;i++){
+        done.set(`Uploading page ${i+1} of ${imgs.length}…`);
+        try{
+          const path=`${U.classId}/shared/books/${id}/${uid()}.jpg`;await upload(path,imgs[i],'image/jpeg');
+          const {error}=await sb.from('book_pages').insert({book_id:id,class_id:U.classId,page_no:next,path});if(error)throw error;next++;ok++;
+        }catch(e){bad++;why=(e&&e.message)||String(e);}
+      }
+      await loadData();render();
+      toast(bad?`${ok} page${ok===1?'':'s'} added, ${bad} failed (${why}). Add the missing pages again.`:`${ok} page${ok===1?'':'s'} added ✓`);
+    }finally{done();}
+  },
+  delPage:async id=>{
+    const p=D.pages.find(x=>x.id===id);if(!confirm('Delete this page?'))return;
+    const {error}=await sb.from('book_pages').delete().eq('id',id);if(error)throw error;
+    if(!D.assignments.some(a=>sheetPg(a).includes(p.path)))await removeFiles([p.path]);await loadData();render();
+  },
+  movePage:async arg=>{
+    const [id,dir]=arg.split('|'),pgs=D.pages.filter(p=>p.book_id===U.param).sort((a,b)=>a.page_no-b.page_no),i=pgs.findIndex(p=>p.id===id),j=i+(+dir);
+    if(i<0||j<0||j>=pgs.length)return;const a=pgs[i],b=pgs[j];
+    const r1=await sb.from('book_pages').update({page_no:b.page_no}).eq('id',a.id),r2=await sb.from('book_pages').update({page_no:a.page_no}).eq('id',b.id);
+    if(r1.error||r2.error)throw (r1.error||r2.error);await loadData();render();
+  },
+  pageToSheet:id=>{const p=D.pages.find(x=>x.id===id),b=D.books.find(x=>x.id===p.book_id);
+    T.draft={id:null,title:`${b.title} — page`,subject:b.subject||'',due:localISO(addDays(new Date(),7)),pgs:[{data:null,path:p.path}],ep:0,questions:[],lines:[],cur:null,published:false};addQ();go('assign');toast('Tap the page where learners should write.');},
+  dlPage:id=>{const p=D.pages.find(x=>x.id===id),b=D.books.find(x=>x.id===p.book_id),n=D.pages.filter(x=>x.book_id===p.book_id).sort((x,y)=>x.page_no-y.page_no).findIndex(x=>x.id===id)+1;return download(p.path,`${b.title} - page ${n}.${extOf(p.path)}`);},
+  dlBook:async id=>{const b=D.books.find(x=>x.id===id),pgs=D.pages.filter(p=>p.book_id===id).sort((x,y)=>x.page_no-y.page_no);
+    if(pgs.length>3&&!confirm(`Download ${pgs.length} pages? Your browser may ask to allow multiple downloads.`))return;
+    for(const [i,p] of pgs.entries()){await download(p.path,`${b.title} - page ${i+1}.${extOf(p.path)}`);await new Promise(r=>setTimeout(r,400));}},
+
+  /* ----- library: documents ----- */
+  docUpload:async files=>{
+    if(!files.length)return;
+    const title=($('#doc-title')?.value||'').trim(),aud=isFac()?'class':($('#doc-aud')?.value||'facilitator'),done=busy('Uploading…');let n=0;
+    try{
+      for(const f of files){
+        const isImg=(f.type||'').startsWith('image/');
+        if(!isImg&&f.size>MAXFILE){toast(`${f.name} is larger than 10 MB.`);continue;}
+        let blob=f,type=f.type||'application/octet-stream',ext=extOf(f.name);
+        if(isImg){const d=await readImage(f,1800);blob=await (await fetch(d)).blob();type='image/jpeg';ext='jpg';}
+        const base=isFac()?`${U.classId}/shared/docs`:aud==='class'?`${U.classId}/shared/learner-docs`:`${U.classId}/private/${U.me.id}/docs`;
+        const path=`${base}/${uid()}.${ext}`;await upload(path,blob,type);
+        const dflt=isImg&&/^(image|scan|img|photo)/i.test(f.name)?'Scan '+new Date().toLocaleString('en-ZA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):f.name.replace(/\.[^.]+$/,'');
+        const {error}=await sb.from('documents').insert({class_id:U.classId,title:title||dflt||'Document',path,mime:type,size:blob.size,audience:aud,by_kind:isFac()?'facilitator':'learner',learner_id:isFac()?null:U.me.id,uploader_name:myName()});
+        if(error){await removeFiles([path]);throw error;}n++;
+      }
+      await loadData();render();if(n)toast(`${n} file${n===1?'':'s'} sent ✓`);
+    }finally{done();}
+  },
+  viewDoc:async id=>{
+    const d=D.docs.find(x=>x.id===id);if(!d)return;
+    const w=window.open('about:blank','_blank');
+    try{await sign([d.path]);const u=url(d.path);if(!u)throw new Error('no link');if(w)w.location.href=u;else location.href=u;}
+    catch(e){if(w)w.close();toast('Could not open this file — try Download instead.');}
+  },
+  dlDoc:id=>{const d=D.docs.find(x=>x.id===id);return download(d.path,`${d.title.replace(/\.[a-z0-9]{2,5}$/i,'')}.${extOf(d.path)}`);},
+  delDoc:async id=>{const d=D.docs.find(x=>x.id===id);if(!confirm(`Delete "${d.title}"?`))return;
+    const {error}=await sb.from('documents').delete().eq('id',id);if(error)throw error;await removeFiles([d.path]);await loadData();render();},
+
+  /* ----- portfolios ----- */
+  pSearch:v=>{T.search=v;const l=$('#plist');if(l)l.innerHTML=portList();},
+  portScan:async(f,el)=>{
+    const lid=el.dataset.l,[img]=await readImages(f.slice(0,1),1600);if(!img)return;
+    const t=prompt('Title for this scan','Class work scan');if(t===null)return;
+    const done=busy('Saving scan…');
+    try{const p=`${U.classId}/private/${lid}/scans/${uid()}.jpg`;await upload(p,img,'image/jpeg');
+      const {error}=await sb.from('results').insert({class_id:U.classId,learner_id:lid,title:t||'Scan',score:0,max:0,scans:[p],source:'upload'});if(error)throw error;
+      await loadData();render();}finally{done();}
+  },
+  addComment:async id=>{const v=$('#cm-text').value.trim();if(!v)return;const {error}=await sb.from('comments').insert({class_id:U.classId,learner_id:id,text:v});if(error)throw error;await loadData();render();},
+  delResult:async id=>{
+    const r=D.results.find(x=>x.id===id);if(!confirm('Delete this result? '+(r.submission_id?'The worksheet goes back to "waiting for marking".':''))) return;
+    const {error}=await sb.from('results').delete().eq('id',id);if(error)throw error;
+    if(r.submission_id)await sb.from('submissions').update({status:'submitted'}).eq('id',r.submission_id);
+    if(r.source!=='submission'&&r.scans?.length)await removeFiles(r.scans);
+    await loadData();go('portfolios',r.learner_id);
+  },
+  dlMarked:async arg=>{
+    const [rid,i]=arg.split('|'),r=D.results.find(x=>x.id===rid),done=busy('Preparing download…');
+    try{if(!url(r.scans[+i]))await sign([r.scans[+i]]);const blob=await flattenInk(url(r.scans[+i]),(r.ink||{})['p'+i]||[]);saveBlob(blob,`${r.title} - page ${+i+1} (marked).jpg`);}finally{done();}
+  },
+
+  /* ----- learner work ----- */
+  answer:(v,el)=>{
+    const aid=U.param,s=ensureSubLocal(aid);s.answers[el.dataset.ln]=v;T.pendingSave=1;
+    clearTimeout(T.st);T.st=setTimeout(()=>saveDraft(aid).catch(handleErr),700);const e=$('#save-state');if(e)e.textContent='Saving…';
+  },
+  lScan:async files=>{
+    const aid=U.param,done=busy('Uploading…');
+    try{
+      const imgs=await readImages(files,1600);if(!imgs.length)return;const s=ensureSubLocal(aid);
+      for(const d of imgs){const p=`${U.classId}/private/${U.me.id}/scans/${uid()}.jpg`;await upload(p,d,'image/jpeg');s.scans.push(p);}
+      await saveDraft(aid);await sign(s.scans);render();
+    }finally{done();}
+  },
+  lScanDel:async i=>{const aid=U.param,s=mySub(aid),[p]=s.scans.splice(+i,1);await saveDraft(aid);await removeFiles([p]);render();},
+  lSubmit:async aid=>{
+    const a=asg(aid),s=ensureSubLocal(aid);
+    const hasLines=a.lines.length>0,wrote=(s.answers.__txt||[]).some(f=>(f.v||'').trim())||Object.values(s.answers.__ink||{}).some(v=>v&&v.length)||(s.scans||[]).length>0||Object.keys(s.answers).some(k=>!k.startsWith('__')&&(s.answers[k]||'').trim());
+    const blank=hasLines?a.questions.filter(q=>!a.lines.filter(l=>l.qid===q.id).some(l=>(s.answers[l.id]||'').trim())).length:(wrote?0:a.questions.length||1);
+    if(!confirm(blank?`You haven't answered ${blank} question(s). Submit anyway?`:"Submit this work for marking? You can't change it afterwards."))return;
+    const done=busy('Submitting…');
+    try{
+      await saveDraft(aid);
+      const {data,error}=await sb.from('submissions').update({status:'submitted',submitted_at:new Date().toISOString()}).eq('id',s.id).select();
+      if(error)throw error;if(!data||!data.length)throw new Error('Could not submit — please try again.');
+      await loadData();render();toast('Submitted! Your facilitator can now mark it ✓');
+    }finally{done();}
+  },
+
+  /* ----- live class ----- */
+  live:()=>Live.open(),
+  liveLeave:()=>Live.leave(),
+  liveMic:()=>{Live.micOn=!Live.micOn;Live.raw?.getAudioTracks().forEach(t=>t.enabled=Live.micOn);$('#lc-mic').classList.toggle('off',!Live.micOn);},
+  liveCam:()=>{Live.camOn=!Live.camOn;$('#lc-cam').classList.toggle('off',!Live.camOn);},
+  liveFxPanel:()=>{const f=$('#live-fx');f.hidden=!f.hidden;Live.renderFx();},
+  liveFx:k=>Live.setEffect(k),
+  liveChroma:(_,el)=>{Live.chroma=el.checked;if(!Live.chroma&&Live.effect!=='none')Live.loadSeg();Live.renderFx();},
+  liveBgFile:async f=>{const [d]=await readImages(f.slice(0,1),1280);if(!d)return;Live.customBg=await loadImg(d);Live.setEffect('uploaded');}
+};
+Object.keys(A).forEach(k=>{const f=A[k];A[k]=function(...a){try{const r=f.apply(this,a);if(r&&r.catch)r.catch(handleErr);return r;}catch(e){handleErr(e);}};});
+
+/* ---------- event delegation ---------- */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');if(!el||el.disabled)return;
+  if(el.tagName==='A')e.preventDefault();
+  const f=A[el.dataset.act];if(f)f(el.dataset.arg??'',el,e);
+});
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.in&&A[el.dataset.in])A[el.dataset.in](el.value,el);
+  else if(el.dataset.ln)A.answer(el.value,el);
+  else if(el.dataset.fl)A.freeText(el.value,el);
+});
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.dataset.file&&A[el.dataset.file]){const files=[...el.files];A[el.dataset.file](files,el);el.value='';}
+  if(el.dataset.ch&&A[el.dataset.ch])A[el.dataset.ch](el.value,el);
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modal').innerHTML)A.closeModal();else if(e.key==='Escape'&&T.full)A.fullView();});
+document.addEventListener('keydown',e=>{
+  if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&$('#g-pages')&&!$('#modal').innerHTML&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||'')){A.pgGo('g-pages|'+(e.key==='ArrowRight'?1:-1));e.preventDefault();}
+});
+document.addEventListener('focusout',e=>{
+  const el=e.target;if(!el||!el.dataset||!el.dataset.fl||(el.value||'').trim())return;
+  const aid=U.param,s=mySub(aid);if(!s||!s.answers.__txt)return;
+  s.answers.__txt=s.answers.__txt.filter(x=>x.id!==el.dataset.fl);el.remove();T.pendingSave=1;clearTimeout(T.st);T.st=setTimeout(()=>saveDraft(aid).catch(handleErr),700);
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)softRefresh();});
+
+T.inkSaved=()=>{
+  if(U.role!=='learner'||U.view!=='doWork')return;
+  const aid=U.param,s0=mySub(aid);if(s0&&s0.status!=='draft')return;
+  const s=ensureSubLocal(aid);s.answers.__ink=T.viewInk;T.pendingSave=1;
+  clearTimeout(T.st);T.st=setTimeout(()=>saveDraft(aid).catch(handleErr),700);const e=$('#save-state');if(e)e.textContent='Saving…';
+};
+
+/* ---------- start ---------- */
+(async function init(){
+  if(!configured){T.loading=false;render();return;}
+  await afterLogin();
+  setInterval(()=>{if(!document.hidden)softRefresh();},45000);
+})();
+/* ================= LIVE CLASS ================= */
+const BGS={};
+function makeBg(kind){
+  const c=document.createElement('canvas');c.width=640;c.height=480;const x=c.getContext('2d');
+  if(kind==='forest'){const g=x.createLinearGradient(0,0,640,480);g.addColorStop(0,'#0A4234');g.addColorStop(1,'#2a7a5c');x.fillStyle=g;x.fillRect(0,0,640,480);x.fillStyle='rgba(245,240,230,.07)';[[90,80,70],[560,120,110],[480,420,90],[150,400,50]].forEach(([a,b,r])=>{x.beginPath();x.arc(a,b,r,0,7);x.fill();});}
+  else if(kind==='classroom'){x.fillStyle='#e9dfc9';x.fillRect(0,0,640,480);x.fillStyle='#7a5530';x.fillRect(60,50,520,280);x.fillStyle='#1d4a3a';x.fillRect(72,62,496,256);x.fillStyle='rgba(255,255,255,.85)';x.font='italic 30px Georgia';x.fillText("Today's lesson",100,120);x.font='22px Georgia';x.fillText('CO₂ + H₂O + light → glucose + O₂',100,170);x.fillStyle='#c9b48f';x.fillRect(0,400,640,80);}
+  else{x.fillStyle='#F5F0E6';x.fillRect(0,0,640,480);x.fillStyle='#e0ece4';x.beginPath();x.arc(530,90,170,0,7);x.fill();x.fillStyle='#0A4234';x.font='700 26px "Plus Jakarta Sans",sans-serif';x.fillText('ClassTrack',30,450);}
+  return c;
+}
+function makeSignal(onMsg){
+  const ch=sb.channel('live-'+U.classId,{config:{broadcast:{self:false}}});
+  let ready=false;const q=[];
+  const raw=m=>ch.send({type:'broadcast',event:'sig',payload:m});
+  ch.on('broadcast',{event:'sig'},({payload})=>onMsg(payload)).subscribe(st=>{if(st==='SUBSCRIBED'){ready=true;q.splice(0).forEach(raw);}});
+  return {send:m=>ready?raw(m):q.push(m),close:()=>sb.removeChannel(ch)};
+}
+const Live={
+  open(){
+    if(this.running)return;const el=$('#live');el.hidden=false;
+    this.id=uid();this.role=U.role;this.name=myName();
+    Object.assign(this,{peers:{},effect:'none',bgKey:'none',chroma:false,bgCanvas:null,micOn:true,camOn:true});
+    el.innerHTML=`<div class="live-top"><div class="row"><span class="live-dot"></span><b>Live class</b><span class="pill" id="live-count" style="background:rgba(245,240,230,.12);color:var(--cream)">1 in class</span></div><button class="lc leave" data-act="liveLeave">${ic('x',18)}Leave</button></div>
+    <div class="stage" id="live-stage"><div class="tile ${this.role==='facilitator'?'fac':''}"><canvas id="live-self" class="mirror"></canvas><span class="tag">You${this.role==='facilitator'?' · Facilitator':''}</span></div>
+    <div class="live-hint" id="live-hint">Waiting for others in your class to join…</div></div>
+    <div class="fx" id="live-fx" hidden></div>
+    <div class="live-ctrl"><button class="lc" id="lc-mic" data-act="liveMic" title="Microphone">${ic('mic',22)}</button><button class="lc" id="lc-cam" data-act="liveCam" title="Camera">${ic('video',22)}</button><button class="lc" data-act="liveFxPanel" title="Background / green screen">${ic('image',22)}</button></div>`;
+    this.start().catch(err=>{const h=$('#live-hint');if(h)h.innerHTML=`<b>Camera unavailable:</b> ${esc(err.message)}<br>Allow camera access and open ClassTrack via http://localhost or https.`;});
+  },
+  async start(){
+    if(!navigator.mediaDevices?.getUserMedia)throw new Error('This page is not in a secure context (use https or localhost).');
+    this.raw=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640},height:{ideal:480},facingMode:'user'},audio:{echoCancellation:true,noiseSuppression:true}});
+    const v=this.video=document.createElement('video');v.muted=true;v.playsInline=true;v.srcObject=this.raw;await v.play();
+    const c=this.canvas=$('#live-self');c.width=v.videoWidth||640;c.height=v.videoHeight||480;this.ctx=c.getContext('2d');
+    this.tmp=document.createElement('canvas');this.tmp.width=c.width;this.tmp.height=c.height;this.tctx=this.tmp.getContext('2d',{willReadFrequently:true});
+    this.small=document.createElement('canvas');this.small.width=48;this.small.height=36;
+    this.running=true;this.loop();
+    this.out=c.captureStream(24);this.raw.getAudioTracks().forEach(t=>this.out.addTrack(t));
+    this.sig=makeSignal(m=>this.onMsg(m));this.send({type:'join',name:this.name,role:this.role});
+  },
+  async loop(){while(this.running){await this.frame();await new Promise(r=>requestAnimationFrame(r));}},
+  async frame(){
+    const {ctx,canvas:c,video:v}=this,w=c.width,h=c.height;
+    if(!this.camOn){ctx.fillStyle='#0d3a2e';ctx.fillRect(0,0,w,h);ctx.fillStyle='#F5F0E6';ctx.font='700 72px "Plus Jakarta Sans",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(initials(this.name),w/2,h/2);ctx.textAlign='start';ctx.textBaseline='alphabetic';return;}
+    if(this.effect==='none'){ctx.drawImage(v,0,0,w,h);return;}
+    if(this.effect==='image'&&this.chroma){this.chromaKey();return;}
+    if(!this.seg){ctx.drawImage(v,0,0,w,h);return;}
+    try{await this.seg.send({image:v});}catch{ctx.drawImage(v,0,0,w,h);}
+  },
+  composite(r){ // AI person segmentation (MediaPipe)
+    const {ctx}=this,w=this.canvas.width,h=this.canvas.height;
+    ctx.save();ctx.clearRect(0,0,w,h);ctx.drawImage(r.segmentationMask,0,0,w,h);
+    ctx.globalCompositeOperation='source-in';ctx.drawImage(r.image,0,0,w,h);
+    ctx.globalCompositeOperation='destination-over';
+    if(this.effect==='blur'){this.small.getContext('2d').drawImage(r.image,0,0,48,36);ctx.imageSmoothingEnabled=true;ctx.drawImage(this.small,0,0,w,h);}else this.drawBg(ctx,w,h);
+    ctx.restore();
+  },
+  chromaKey(){ // physical green screen
+    const {tctx,tmp,ctx}=this,w=tmp.width,h=tmp.height;tctx.drawImage(this.video,0,0,w,h);
+    const d=tctx.getImageData(0,0,w,h),p=d.data;
+    for(let i=0;i<p.length;i+=4){const r=p[i],g=p[i+1],b=p[i+2];if(g>80&&g>r*1.25&&g>b*1.25)p[i+3]=0;else if(g>r*1.1&&g>b*1.1)p[i+1]=Math.max(r,b);}
+    tctx.putImageData(d,0,0);ctx.clearRect(0,0,w,h);this.drawBg(ctx,w,h);ctx.drawImage(tmp,0,0);
+  },
+  drawBg(ctx,w,h){const b=this.bgCanvas;if(!b){ctx.fillStyle='#0A4234';ctx.fillRect(0,0,w,h);return;}const bw=b.naturalWidth||b.width,bh=b.naturalHeight||b.height,s=Math.max(w/bw,h/bh);ctx.drawImage(b,(w-bw*s)/2,(h-bh*s)/2,bw*s,bh*s);},
+  async loadSeg(){
+    if(this.seg||this.segLoading)return;this.segLoading=true;this.renderFx();
+    try{const base='https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/';await loadScript(base+'selfie_segmentation.js');
+      const s=new SelfieSegmentation({locateFile:f=>base+f});s.setOptions({modelSelection:1});s.onResults(r=>this.composite(r));if(s.initialize)await s.initialize();this.seg=s;}
+    catch(e){this.chroma=true;toast('Could not load the AI background model (offline?). Switched to green-screen mode.');}
+    this.segLoading=false;this.renderFx();
+  },
+  async setEffect(k){
+    if(k==='custom'){$('#bg-file')?.click();return;}
+    this.bgKey=k;this.effect=k==='none'||k==='blur'?k:'image';
+    if(this.effect==='image')this.bgCanvas=k==='uploaded'?this.customBg:(BGS[k]||(BGS[k]=makeBg(k)));
+    this.renderFx();if(this.effect==='blur'||(this.effect==='image'&&!this.chroma))await this.loadSeg();
+  },
+  renderFx(){
+    const f=$('#live-fx');if(!f)return;const fx=[['none','None'],['blur','Blur'],['forest','Forest green'],['classroom','Classroom'],['cream','Cream studio'],['custom','Upload image…']];
+    f.innerHTML=`<div class="row between" style="margin-bottom:10px"><b>Virtual background</b><span class="small" style="opacity:.7">${this.segLoading?'Loading AI model…':this.chroma?'Green-screen (chroma key) mode':'AI person detection'}</span></div>
+    <div class="chips">${fx.map(([k,l])=>`<button class="chip ${this.bgKey===k||(k==='custom'&&this.bgKey==='uploaded')?'on':''}" data-act="liveFx" data-arg="${k}">${l}</button>`).join('')}</div>
+    <label class="toggle"><input type="checkbox" data-ch="liveChroma" ${this.chroma?'checked':''}> I'm in front of a real green screen (faster, no AI needed)</label>
+    <input type="file" accept="image/*" id="bg-file" hidden data-file="liveBgFile">`;
+  },
+  send(m){m.from=this.id;this.sig?.send(m);},
+  peer(id,name,role){
+    if(this.peers[id])return this.peers[id];
+    const pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}]}),p=this.peers[id]={pc,name,role,q:[]};
+    this.out.getTracks().forEach(t=>pc.addTrack(t,this.out));
+    pc.onicecandidate=e=>{if(e.candidate)this.send({type:'ice',to:id,c:e.candidate.toJSON()});};
+    pc.ontrack=e=>this.showRemote(id,e.streams[0]);
+    pc.onconnectionstatechange=()=>{if(['failed','closed'].includes(pc.connectionState))this.drop(id);};
+    return p;
+  },
+  async setRemote(p,sdp){await p.pc.setRemoteDescription(sdp);for(const c of p.q.splice(0))await p.pc.addIceCandidate(c).catch(()=>{});},
+  async onMsg(m){
+    if(!this.running||m.from===this.id||(m.to&&m.to!==this.id))return;
+    try{
+      if(m.type==='join'){if(this.peers[m.from])this.drop(m.from);const p=this.peer(m.from,m.name,m.role);await p.pc.setLocalDescription(await p.pc.createOffer());this.send({type:'offer',to:m.from,sdp:{type:'offer',sdp:p.pc.localDescription.sdp},name:this.name,role:this.role});}
+      else if(m.type==='offer'){let p=this.peers[m.from];if(p&&p.pc.signalingState!=='stable'){if(this.id>m.from)return;await p.pc.setLocalDescription({type:'rollback'});}p=p||this.peer(m.from,m.name,m.role);await this.setRemote(p,m.sdp);await p.pc.setLocalDescription(await p.pc.createAnswer());this.send({type:'answer',to:m.from,sdp:{type:'answer',sdp:p.pc.localDescription.sdp}});}
+      else if(m.type==='answer'){const p=this.peers[m.from];if(p&&p.pc.signalingState==='have-local-offer')await this.setRemote(p,m.sdp);}
+      else if(m.type==='ice'){const p=this.peers[m.from];if(!p)return;p.pc.remoteDescription?await p.pc.addIceCandidate(m.c).catch(()=>{}):p.q.push(m.c);}
+      else if(m.type==='leave')this.drop(m.from);
+    }catch(e){console.warn('live',e);}
+  },
+  showRemote(id,stream){
+    const p=this.peers[id];if(!p)return;p.stream=stream;let t=$('#tile-'+id);
+    if(!t){t=document.createElement('div');t.className='tile'+(p.role==='facilitator'?' fac':'');t.id='tile-'+id;t.innerHTML=`<video autoplay playsinline muted></video><audio autoplay playsinline></audio><span class="tag">${esc(p.name)}${p.role==='facilitator'?' · Facilitator':''}</span>`;const st=$('#live-stage');p.role==='facilitator'?st.prepend(t):st.insertBefore(t,$('#live-hint'));}
+    const v=t.querySelector('video'),au=t.querySelector('audio');v.muted=true;
+    if(v.srcObject!==stream){v.srcObject=stream;au.srcObject=stream;v.play().catch(()=>{});au.play().catch(()=>this.needSound());}
+    this.updateCount();
+  },
+  needSound(){
+    if($('#live-snd'))return;const b=document.createElement('button');b.id='live-snd';b.className='btn btn-primary';b.style.cssText='position:absolute;left:50%;top:70px;transform:translateX(-50%);z-index:5';b.textContent='🔈 Tap here to turn on sound';
+    b.onclick=()=>{$$('#live-stage audio,#live-stage video').forEach(m=>{if(m.tagName==='AUDIO')m.muted=false;m.play().catch(()=>{});});b.remove();};
+    ($('#live')||document.body).appendChild(b);
+  },
+  drop(id){const p=this.peers[id];if(!p)return;try{p.pc.close()}catch{}delete this.peers[id];$('#tile-'+id)?.remove();this.updateCount();},
+  updateCount(){const n=Object.values(this.peers).filter(p=>p.stream).length+1;const c=$('#live-count');if(c)c.textContent=`${n} in class`;const h=$('#live-hint');if(h)h.hidden=n>1;},
+  leave(){
+    if(this.running)this.send({type:'leave'});Object.keys(this.peers||{}).forEach(id=>this.drop(id));this.running=false;
+    this.raw?.getTracks().forEach(t=>t.stop());this.out?.getTracks().forEach(t=>t.stop());this.sig?.close();this.sig=null;this.raw=null;
+    const el=$('#live');el.hidden=true;el.innerHTML='';
+  }
+};
+window.addEventListener('beforeunload',()=>{if(Live.running)Live.send({type:'leave'});});
+</script>
+</body>
+</html>
